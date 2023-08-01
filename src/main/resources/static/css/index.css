@@ -1,0 +1,595 @@
+body {
+    padding: 0;
+    margin: 0;
+    background: #BBBBBB;
+    height: 100vh;
+}
+
+
+.stixee{
+    display: flex;
+}
+
+/*favorite-block*/
+
+.favorite-block{
+    background: #BBBBBB;
+    width: 350px;
+    padding-top: 32px;
+
+}
+.tab-content{
+    height: calc(100vh - 78px);
+    overflow-y: auto;
+}
+
+.tab-content::-webkit-scrollbar {
+    width: 7px;
+}
+.tab-content::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 7px;
+}
+.favorite-buttons{
+    text-align: center;
+}
+.fa-solid{
+    color: #212121;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: 'Open Sans';
+    font-weight: 600;
+    font-style: normal;
+    font-size: 15px;
+    color: #212121;
+    margin-right: 5px;
+}
+.tab-btn:hover{
+    color: #525252;
+}
+.tab-btn.active {
+    color: #525252;
+}
+
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+
+
+
+.songs{
+    margin-top: 25px;
+}
+.song{
+    padding: 0 15px 0 15px;
+    display: flex;
+    align-items: center;
+}
+.song:hover{
+    background: #D9D9D9;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.image{
+    font-size: 0px;
+}
+.image img{
+    margin: 5px 0 5px 0;
+    width: 70px;
+    height: 70px;
+    border-radius: 6px;
+}
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.song:hover .play-icon {
+    opacity: 1;
+
+}
+.song:hover .image{
+    filter: blur(1.5px);
+}
+.song-name p{
+    margin: 0;
+}
+.artist p{
+    margin: 0;
+}
+.favorite-heart{
+    margin-left: auto;
+}
+.favorite-heart .fa-heart{
+    color: #B52B2D;
+}
+.favorite-heart-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+.song .name{
+    margin-left: 10px;
+}
+.song .name .song-name p{
+    font-family: 'Open sans';
+    font-weight: 600;
+    font-size: 20px;
+}
+.song .name .artist p{
+    font-family: 'Open sans';
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/*favorite-block*/
+
+
+
+
+.main-block{
+    background: #FFFFFF;
+    width: calc(100vw - 350px);
+
+}
+
+
+
+/*header*/
+
+.header{
+    background: #A0A0A0;
+    display: flex;
+    align-items: center;
+    padding: 10px 0 10px 0;
+    justify-content: space-around;
+}
+.logo img{
+    max-width: 213px;
+    max-height: 79px;
+}
+
+
+
+
+
+.search-box{
+    padding: 12px 24px 12px 24px;
+    background: #212121;
+    border-radius: 24px;
+
+}
+.search-box input{
+    background-color: #212121;
+    border: none;
+    outline: none;
+    color: #bebebe;
+    font-size: 16px;
+    font-family: 'Open sans';
+    font-weight: 400;
+    width: 600px
+}
+.search-box input::placeholder{
+    color: #6B6B6B;
+}
+.srch-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+}
+.srch-btn .fa-search{
+    font-size: 16px;
+    color: #6B6B6B;
+}
+
+
+
+.account{
+    align-items: center;
+    display: flex;
+    padding: 8px;
+    background: #212121;
+    border-radius: 24px;
+    font-size: 0;
+}
+.account-avatar img{
+    width: 32px;
+    height: 32px;
+    border-radius: 20px;
+    object-fit: cover;
+    margin-right: 8px;
+}
+.account-nickname p{
+    margin: 0;
+    color: #FFFFFF;
+    font-family: 'Open sans';
+    font-size: 16px;
+    font-weight: 600;
+    margin-right: 8px;
+}
+/*header*/
+
+
+
+
+
+
+/*player*/
+.player {
+    position: relative;
+    height: calc(100vh - 81px);
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+}
+
+.player-container {
+    position: relative;
+}
+
+.player::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(236, 236, 236, 0.70);
+    backdrop-filter: blur(25px);
+}
+
+.song-preview {
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+}
+
+.song-preview img {
+    width: 350px;
+    height: 350px;
+    border-radius: 24px;
+    object-fit: cover;
+    box-shadow: 8px 8px 8px 0px rgba(0, 0, 0, 0.25);
+
+}
+
+.player-song-name{
+    text-align: center;
+    font-family: 'Open sans';
+    color: #212121;
+}
+
+.player-song-name .name p{
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+    margin-top: 13px;
+}
+.player-song-name .album p{
+    font-size: 16px;
+    margin: 0;
+    margin-top: 5px;
+}
+.player-song-name .artist p{
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    margin-top: 5px;
+
+}
+
+
+.progress-container{
+    margin-top: 13px;
+    background: #FFFFFF;
+    height: 6px;
+    display: flex;
+    align-items: center;
+    border-radius: 7px;
+    width: 70%;
+    margin-right: auto;
+    margin-left: auto;
+}
+.progress{
+    background: #212121;
+    height: 6px;
+    border-radius: 7px;
+
+}
+.buttons{
+    margin-top: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 30%;
+    margin-left: 30%;
+}
+.buttons .btn img{
+    width: 40px;
+    height: 40px;
+}
+
+.player-time{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: auto;
+    margin-left: auto;
+
+    width: 70%;
+}
+.player-time p{
+    text-align: center;
+    font-family: 'Open sans';
+    font-weight: 500;
+    color: #212121;
+    margin: 0;
+}
+
+.auxiliary-buttons{
+    margin-top: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 40%;
+    margin-left: 40%;
+}
+.auxiliary-buttons .btn img{
+    width: 20px;
+    height: 20px;
+}
+
+.shuffle{
+    opacity: 1;
+}
+/*player*/
+
+
+
+/*menu*/
+.main-menu{
+    height: calc(100vh - 81px);
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #F3F3F3;
+}
+
+.first-line{
+    width: calc(100vw - 350px);
+    display: flex;
+    justify-content: space-evenly;
+}
+.second-line{
+    margin-top: 40px;
+    width: calc(100vw - 350px);
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.menu {
+    position: absolute;
+    border-spacing: 58px 46px;
+}
+
+.menu button{
+    border: none;
+    background: none;
+}
+.menu img {
+    margin-right: auto;
+    margin-left: auto;
+    width: 400px;
+    height: 285px;
+    border-radius: 24px;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+.menu img:hover{
+    box-shadow: 8px 8px 8px 0px rgba(0, 0, 0, 0.25);
+
+}
+/*menu*/
+
+
+
+/*album*/
+.album-container{
+    height: calc(100vh - 81px);
+    overflow-y: auto;
+
+}
+
+.album-container::-webkit-scrollbar {
+    width: 7px;
+}
+.album-container::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 7px;
+}
+
+.album {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+}
+
+.album-header {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+}
+
+.album::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(236, 236, 236, 0.50);
+    backdrop-filter: blur(10px);
+}
+
+.album-preview img{
+    margin-top: 23px;
+    margin-left: 23px;
+    margin-right: 23px;
+    width: 254px;
+    height: 254px;
+    border-radius: 360px;
+    box-shadow: 8px 8px 8px 0px rgba(0, 0, 0, 0.25);
+}
+.album-header p{
+    margin: 0;
+    font-family: 'Open sans';
+    color: #FFF;
+}
+.artist-name p{
+    font-weight: 700;
+    font-size: 36px;
+
+}
+.info p{
+    color: #535353;
+    font-weight: 700;
+    font-size: 20px;
+}
+.album-name p{
+    font-weight: 700;
+    font-size: 48px;
+}
+
+.songs-header{
+    margin-top: 13px;
+    margin-bottom: 13px;
+    align-items: center;
+    display: flex;
+}
+.hash p{
+    margin: 0;
+    margin-left: 23px;
+    font-family: 'Open sans';
+    font-weight: 500;
+    font-size: 16px;
+}
+.song-title p{
+    margin: 0;
+    margin-left: 26px;
+    font-family: 'Open sans';
+    font-weight: 500;
+    font-size: 16px;
+}
+.clock{
+    margin-left: auto;
+    margin-right: 23px;
+}
+.album-songs hr{
+    margin: 0;
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-bottom: 16px;
+}
+
+
+.song-block{
+    display: flex;
+    align-items: center;
+    font-family: 'Open sans';
+    color: #212121;
+    margin-bottom: 16px;
+    position: relative;
+}
+.song-block:hover{
+    border-radius: 6px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    background: #E7E7E7;
+    margin-right: 20px;
+    margin-left: 20px;
+
+}
+.number {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.number p{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: 25px;
+}
+.name-block{
+    margin-left: 28px;
+}
+.title p{
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+.song-block .artist p{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+.time{
+    margin-left: auto;
+}
+.time p{
+    margin: 0;
+    margin-right: 23px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.play-ic{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 25px;
+    opacity: 0;
+    pointer-events: none;
+    margin-left: 17px;
+    color: #212121;
+}
+.song-block:hover .number p{
+    opacity: 0;
+}
+.song-block:hover .play-ic{
+    opacity: 1;
+
+}
+/*album*/
+
+
