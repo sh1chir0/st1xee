@@ -91,7 +91,6 @@ public class MainController {
             tempFile.deleteOnExit();
             FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(tempFile));
 
-            // Calculate duration using JAudioTagger
             try {
                 AudioFile audioFile = AudioFileIO.read(tempFile);
                 if (audioFile != null && audioFile.getAudioHeader() != null) {
@@ -106,7 +105,7 @@ public class MainController {
             } catch (CannotReadException | IOException | TagException | ReadOnlyFileException |
                      InvalidAudioFrameException e) {
                 e.printStackTrace();
-                song.setDuration("00:00"); // Set default duration in case of error
+                song.setDuration("00:00");
             }
 
             songService.saveSong(song);

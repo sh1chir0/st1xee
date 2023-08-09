@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author sh1chiro 29.07.2023
  */
@@ -20,5 +22,8 @@ public class SongService {
     }
     public Song getSong(){
         return songRepository.findById(1L).orElse(null);
+    }
+    public List<Song> allSongs(){
+        return songRepository.findAll();
     }
 }
