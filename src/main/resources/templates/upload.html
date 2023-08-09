@@ -1,22 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Завантаження пісні</title>
+  <title>load song</title>
 </head>
 <body>
-<h1>Завантаження пісні</h1>
+<h1>load song</h1>
 <form action="/upload" method="post" enctype="multipart/form-data">
-  <label for="title">Назва:</label>
+  <label for="title">title:</label>
   <input type="text" id="title" name="title" required>
   <br>
-  <label for="artist">Автор:</label>
+  <label for="artist">artist:</label>
   <input type="text" id="artist" name="artist" required>
   <br>
-  <label for="file">Файл:</label>
+  <label for="album">id album</label>
+  <input type="text" id="album" name="album" required>
+  <br>
+  <label for="file">audio:</label>
   <input type="file" id="file" name="file" accept=".mp3" required>
   <br>
-  <button type="submit">Завантажити</button>
+  <label for="preview" class="form-label">preview</label>
+  <input class="form-control" type="file" accept="image/*" id="preview" name="preview">
+  <br>
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+  <button type="submit">upload</button>
 </form>
 </body>
 </html>

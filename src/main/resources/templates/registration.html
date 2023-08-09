@@ -18,27 +18,28 @@
 <div class="login-container">
 
   <div class="login-form">
-    <h2>Sign in</h2>
-    <hr>
-    <label for="email">E-mail:</label>
-    <input type="email" id="email" placeholder="Enter your e-mail">
+      <h2>Registration</h2>
+      <hr>
+      <form action="/registration" method="post">
+      <label for="email">E-mail:</label>
+      <input type="email" name="email" id="email" placeholder="Enter your e-mail">
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" placeholder="Enter your password">
+      <label for="password">Password:</label>
+      <input type="password" name="password" id="password" placeholder="Enter your password">
 
-    <label for="r-password">Repeat password:</label>
-    <input type="password" id="r-password" placeholder="Enter your password again">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <label for="r-password">Repeat password:</label>
+      <input type="password" name="r-password" id="r-password" placeholder="Enter your password again">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-    <button class="confirm-btn">Confirm</button>
-    <hr>
-
+      <button class="confirm-btn">Confirm</button>
+      <hr>
+    </form>
     <button class="google-btn">
       <i class="fab fa-google"></i>
       Continue with Google
     </button>
 
-    <p>Don't have an account? <a href="#">Registration...</a></p>
+    <p>Don't have an account? <a href="/login">Registration...</a></p>
   </div>
 </div>
 </body>

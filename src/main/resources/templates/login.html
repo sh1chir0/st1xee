@@ -21,11 +21,11 @@
         <form action="/login" method="post">
         <h2>Sign in</h2>
         <hr>
-        <label for="email">E-mail:</label>
-        <input type="email" id="email" placeholder="Enter your e-mail">
+        <label for="username">E-mail:</label>
+        <input type="email" name="username" id="username" placeholder="Enter your e-mail">
 
         <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter your password">
+        <input type="password" name="password" id="password" placeholder="Enter your password">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
         <button class="confirm-btn">Confirm</button>
@@ -36,7 +36,7 @@
             Continue with Google
         </button>
         </form>
-        <p>Don't have an account? <a href="#">Registration...</a></p>
+        <p>Don't have an account? <a href="/registration">Registration...</a></p>
     </div>
 </div>
 </body>

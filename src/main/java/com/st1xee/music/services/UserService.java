@@ -50,7 +50,9 @@ public class UserService {
 //        }
 //    }
     public boolean createUser(User user){
-        if(userRepository.findByEmail(user.getEmail()) != null) return false;
+        if(userRepository.findByEmail(user.getEmail()) != null){
+            return false;
+        }
         user.setActive(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if(user.getEmail().equals("pavel.dereyes@gmail.com")){

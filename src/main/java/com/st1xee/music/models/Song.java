@@ -24,19 +24,22 @@ public class Song {
     private Long id;
     @Column(name = "title")
     private String title;
-
+    @Column(name = "originalFileName")
+    private String originalFileName;
+    @Column(name = "size")
+    private Long size;
+    @Column(name = "fileType")
+    private String fileType;
     @ManyToOne
     private Album album;
     @ManyToOne
     private User artist;
-    @Column(name = "bytes")
+    @Column(name = "bytes", columnDefinition = "MEDIUMBLOB")
     private byte[] bytes;
-    @Column(name = "preview")
-    private String preview;
+    @OneToOne
+    private Image preview;
     @Column(name = "duration")
     private String duration;
-    @OneToOne
-    private Playlist playlist;
     @Column(name = "dateOfCreated")
     private LocalDateTime dateOfCreated;
     @PrePersist
