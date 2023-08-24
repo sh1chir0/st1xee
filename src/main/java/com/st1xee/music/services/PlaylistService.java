@@ -1,5 +1,7 @@
 package com.st1xee.music.services;
 
+import com.st1xee.music.models.Playlist;
+import com.st1xee.music.repositories.PlaylistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,4 +13,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class PlaylistService {
+    private final PlaylistRepository playlistRepository;
+
+    public Playlist createPlaylist(Playlist playlist){
+        return playlistRepository.save(playlist);
+    }
 }

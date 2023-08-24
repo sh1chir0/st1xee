@@ -10,6 +10,7 @@
   <script src="https://kit.fontawesome.com/ebe2b16cd6.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Roboto:wght@500&display=swap" rel="stylesheet">
   <script  src="/js/buttons.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <title>St1xee Music</title>
 </head>
 <body>
@@ -17,7 +18,7 @@
 <div class="stixee">
   <div class="favorite-block">
     <div class="favorite-buttons">
-      <a href="#"><i class="tab-btn fa-solid fa-house"></i><a>
+      <button class="menu-button" id="menu-button" n><i class="tab-btn fa-solid fa-house"></i></button>
         <button class="tab-btn" onclick="openTab(event, 'songs')">Songs</button>
         <button class="tab-btn" onclick="openTab(event, 'artists')">Artists</button>
         <button class="tab-btn" onclick="openTab(event, 'playlists')">Playlists</button>
@@ -574,8 +575,9 @@
 
 
 
-<script src="/js/player.js"></script>
 
+<script src="/js/player.js"></script>
+<script src="../js/main.js"></script>
 </body>
 </html>
 

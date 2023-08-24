@@ -2,7 +2,6 @@ package com.st1xee.music.controllers;
 
 import com.st1xee.music.models.Album;
 import com.st1xee.music.models.Song;
-import com.st1xee.music.repositories.ImageRepository;
 import com.st1xee.music.services.AlbumService;
 import com.st1xee.music.services.ImageService;
 import com.st1xee.music.services.SongService;
@@ -14,8 +13,6 @@ import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -62,21 +59,21 @@ public class MainController {
 
     @GetMapping("/upload")
     public String showUploadPage() {
-        return "upload"; // Відображення сторінки upload.html
+        return "upload";
     }
     @PostMapping("/upload")
     public String uploadSong(@RequestParam("file") MultipartFile file,
                              @RequestParam("title") String title,
                              @RequestParam("artist") Long artist,
                              @RequestParam("album") Long album,
-                             @RequestParam("preview") MultipartFile preview){
+                             @RequestParam("preview") MultipartFile preview) {
         try {
             Song song = new Song();
 
             byte[] audioData = file.getBytes();
 
-            if(preview != null){
-                song.setPreview(imageService.getImageById(imageService.add(preview)));
+            if (preview != null) {
+                song.setPreview(imageService.add(preview));
             }
             song.setTitle(title);
             song.setOriginalFileName(file.getOriginalFilename());
@@ -86,7 +83,6 @@ public class MainController {
             song.setAlbum(albumService.getAlbumById(album));
             song.setBytes(audioData);
 
-            // Create a temporary file from the InputStream
             File tempFile = File.createTempFile("temp_audio", ".mp3");
             tempFile.deleteOnExit();
             FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(tempFile));

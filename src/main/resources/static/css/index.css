@@ -18,6 +18,15 @@ body {
     padding-top: 32px;
 
 }
+.menu-button{
+    display: inline-block;
+    font-size: inherit;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    color: inherit;
+}
 .tab-content{
     height: calc(100vh - 78px);
     overflow-y: auto;

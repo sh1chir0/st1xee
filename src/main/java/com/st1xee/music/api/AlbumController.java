@@ -25,6 +25,16 @@ public class AlbumController {
     @ResponseBody
     public ResponseEntity<List<SongDTO>> getAllSongs(){
         List<Song> songs = songService.allSongs();
+        return ResponseEntity.ok(songToSongDTO(songs));
+    }
+    @GetMapping("/shazam")
+    @ResponseBody
+    public ResponseEntity<List<SongDTO>> getTopShazam(){
+        List<Song> songs = songService.getSongsByAlbumId(1L);
+        return ResponseEntity.ok(songToSongDTO(songs));
+    }
+
+    private List<SongDTO> songToSongDTO(List<Song> songs){
         List<SongDTO> songDTOs = new ArrayList<>();
         for(Song song: songs){
             SongDTO songDTO = new SongDTO();
@@ -32,13 +42,15 @@ public class AlbumController {
             songDTO.setTitle(song.getTitle());
             songDTO.setArtistId(song.getArtist().getId());
             songDTO.setArtistNickname(song.getArtist().getEmail());
-//            songDTO.setAlbumId(song.getAlbum().getId());
-//            songDTO.setAlbumTitle(song.getAlbum().getTitle());
+            if(song.getAlbum() != null){
+                songDTO.setAlbumId(song.getAlbum().getId());
+                songDTO.setAlbumTitle(song.getAlbum().getTitle());
+            }
             songDTO.setPreview(song.getPreview().getId());
             songDTO.setDuration(song.getDuration());
             songDTOs.add(songDTO);
         }
-        return ResponseEntity.ok(songDTOs);
+        return songDTOs;
     }
 }
 

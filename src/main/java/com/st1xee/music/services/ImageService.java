@@ -19,11 +19,11 @@ import java.util.List;
 public class ImageService {
     private final ImageRepository imageRepository;
 
-    public Long add(MultipartFile file) throws IOException {
+    public Image add(MultipartFile file) throws IOException {
         Image image = toImageEntity(file);
         imageRepository.save(image);
         System.out.println(image.getId());
-        return image.getId();
+        return image;
     }
     private Image toImageEntity(MultipartFile file) throws IOException {
         Image image = new Image();

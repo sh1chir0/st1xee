@@ -44,7 +44,7 @@ public class User  implements UserDetails{
     @OneToOne
     private Image image;
     @OneToMany(mappedBy = "artist")
-    private List<Playlist> playlists;
+    private List<Playlist> playlists = new ArrayList<>();
     @OneToMany(mappedBy = "artist")
     private List<Song> songs;
     @OneToMany(mappedBy = "artist")

@@ -26,4 +26,7 @@ public class SongService {
     public List<Song> allSongs(){
         return songRepository.findAll();
     }
+    public List<Song> getSongsByAlbumId(Long id){
+        return songRepository.getSongsByAlbumId(id);
+    }
 }
