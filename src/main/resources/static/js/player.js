@@ -1,18 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const player = document.getElementById('player');
-    player.style.backgroundImage = "url('https://s3-alpha-sig.figma.com/img/1998/ccca/d1e4d6ca2fdb5711edb95a4ae2f849d5?Expires=1690761600&Signature=d6QKjZQwUTzAIFe0Q2Iww5edzFrTBfn-n7zZ~cSm8DXk7ImbI-4UO7UD3haLGJ-jynX3NpySjsbOa8kGvdIM6~ovI4q5b-HlhbcDl~nCaa7dJ9kZ3plCM0tjBjgXHcqhcDudaRBWfiDvUVeSQKm7HBBjbjcmNBq8CqKvndaYDVmUpOIIBpbNHSSEPbNSmQKgCNcAVXrtpaq8sBpWGnU65geqwz8MfQ7cSE5KvbUQdd694QvdwKBRtxo1BEeiFx5jPt6l9nuMmc6W4QSadqpZdDeiSqD64lqrKDNE-dO3WBZ-41g2n7LSf3G4zdcvB4i-hKDn5rh7LYixGGopyyrBDw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4')";
-
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const album = document.getElementById('album');
-    album.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/ru/4/45/Billie_Eilish_-_Happier_Than_Ever.png')";
-
-});
-
-
-
-const playerStructure = document.querySelector('.player-structure'),
+let playerStructure = document.querySelector('.player-structure'),
     prevBtn = document.querySelector('.prev'),
     playBtn = document.querySelector('.play'),
     nextBtn = document.querySelector('.next'),
@@ -26,8 +12,18 @@ const playerStructure = document.querySelector('.player-structure'),
     repeat = document.querySelector('.repeat'),
     heart = document.querySelector('.heart'),
     currentTimeNum = document.querySelector('.current-time'),
-    songTime = document.querySelector('.song-time')
+    songTime = document.querySelector('.song-time'),
+    albumName = document.querySelector('.album-name'),
+    artistNickname = document.querySelector('.artist')
 
+const player = document.getElementById('player');
+
+const albumForPlaying = JSON.parse(localStorage.getItem('albumForPlaying'))
+const songId = JSON.parse(localStorage.getItem('songId'))
+console.log(albumForPlaying)
+console.log(songId)
+const imageUrl = "/images/" + albumForPlaying[songId].preview;
+player.style.backgroundImage = `url(${imageUrl})`;
 
 
 const songs = ['my-strange-addiction', 'my-boy', 'idontwannabeyours', 'x-ray', 'cheat-code', 'cuba-libre']
@@ -36,15 +32,20 @@ const prevSongs = []
 let isShuffle = false
 let isRepeat = false
 
-let songIndex = 0
+let songIndex = songId
 
 
 function loadSong(song) {
-    name.innerHTML = song
-    audio.src = '../audio/' + song + '.mp3'
-    previewImg.src = '../img/b-fiv.jpg'
+    audio.src = '/api/albums/' + song.id + '/play'
+    name.innerHTML = song.title
+    previewImg.src = `/images/${song.preview}`
+    player.style.backgroundImage = `url(/images/${song.preview})`
+    albumName.innerHTML = song.albumTitle
+    artistNickname.innerHTML = song.artistNickname
+
+
 }
-loadSong(songs[songIndex])
+loadSong(albumForPlaying[songIndex])
 
 function playSong(){
     playerStructure.classList.add('play')
@@ -79,14 +80,14 @@ function nextSong(){
     nextBtn.style.opacity = 0
     prevSongs.push(songIndex)
     if(isShuffle){
-        songIndex = getRandomNumber(0, songs.length - 1)
+        songIndex = getRandomNumber(0, albumForPlaying.length - 1)
     } else{
         songIndex++
-        if(songIndex > songs.length - 1){
+        if(songIndex > albumForPlaying.length - 1){
             songIndex = 0
         }
     }
-    loadSong(songs[songIndex])
+    loadSong(albumForPlaying[songIndex])
     setTimeout(() => {
         nextBtn.style.opacity = 1;
     }, 150);
@@ -98,14 +99,15 @@ nextBtn.addEventListener('click', () => {
 
 function prevSong(){
     prevBtn.style.opacity = 0;
-    loadSong(songs[prevSongs[prevSongs.length - 1]])
-    prevSongs.pop()
-    if(prevSongs.length === 0){
+    if(prevSongs.length !== 0 && isShuffle){
+        loadSong(albumForPlaying[prevSongs[prevSongs.length - 1]])
+        prevSongs.pop()
+    }else{
         songIndex--
         if(songIndex < 0){
-            songIndex = songs.length - 1
+            songIndex = albumForPlaying.length - 1
         }
-        loadSong(songs[songIndex])
+        loadSong(albumForPlaying[songIndex])
     }
 
     setTimeout(() => {
@@ -120,8 +122,8 @@ prevBtn.addEventListener('click', () => {
 
 function updateProgress(e){
     const {duration, currentTime} = e.srcElement
-    // const progressPercent = (currentTime/duration) * 100
-    // progress.style.width = progressPercent + '%'
+    const progressPercent = (currentTime/duration) * 100
+    progress.style.width = progressPercent + '%'
     if (!isNaN(duration)) {
         const progressPercent = (currentTime / duration) * 100;
         progress.style.width = progressPercent + "%";
@@ -151,13 +153,13 @@ function setProgress(e){
     audio.currentTime = (clickX/width) * duration
 }
 progressContainer.addEventListener('click', setProgress)
-audio.addEventListener('ended', () =>{
-    if(isRepeat){
-        repeatSong()
-    }else{
-        nextSong()
-    }
-})
+// audio.addEventListener('ended', () =>{
+//     if(isRepeat){
+//         repeatSong()
+//     }else{
+//         nextSong()
+//     }
+// })
 
 
 
@@ -194,6 +196,6 @@ repeat.addEventListener('click', () => {
     repeatMusic()
 })
 function repeatSong(){
-    loadSong(songs[songIndex])
+    loadSong(albumForPlaying[songIndex])
     playSong()
 }

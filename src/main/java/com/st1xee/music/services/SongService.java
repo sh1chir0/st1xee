@@ -29,4 +29,7 @@ public class SongService {
     public List<Song> getSongsByAlbumId(Long id){
         return songRepository.getSongsByAlbumId(id);
     }
+    public Song getSongById(Long id){
+        return songRepository.findById(id).orElse(null);
+    }
 }

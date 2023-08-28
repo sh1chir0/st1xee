@@ -1,4 +1,5 @@
 package com.st1xee.music.models;
+import com.st1xee.music.DTO.SongDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
