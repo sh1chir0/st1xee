@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Playlist</title>
+</head>
+<body>
+<div th:each="song : ${playlist}">
+  <p th:text="${song.getTitle()}"></p>
+</div>
+
+</body>
+</html>

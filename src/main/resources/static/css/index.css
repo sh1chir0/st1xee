@@ -148,7 +148,7 @@ body {
 .song .name .song-name p{
     font-family: 'Open sans';
     font-weight: 600;
-    font-size: 20px;
+    font-size: 16px;
 }
 .song .name .artist p{
     font-family: 'Open sans';
@@ -389,7 +389,7 @@ body {
     position: relative;
     display: flex;
     align-items: center;
-    background: #F3F3F3;
+    background: #d6d6d6;
 }
 
 .first-line{
@@ -546,11 +546,23 @@ body {
     margin-left: 20px;
 
 }
+.pl-btn{
+    display: inline-block;
+    font-size: inherit;
+    padding: 0;
+    margin: 0;
+    background: none;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
 .number {
     margin: 0;
     display: flex;
     align-items: center;
     position: relative;
+    text-align: center;
 }
 .number p{
     margin: 0;
@@ -587,16 +599,15 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 25px;
-    opacity: 0;
-    pointer-events: none;
+    visibility: hidden;
     margin-left: 17px;
     color: #212121;
 }
 .song-block:hover .number p{
-    opacity: 0;
+    visibility: hidden;
 }
 .song-block:hover .play-ic{
-    opacity: 1;
+    visibility: visible;
 
 }
 /*album*/

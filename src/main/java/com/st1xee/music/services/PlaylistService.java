@@ -18,4 +18,15 @@ public class PlaylistService {
     public Playlist createPlaylist(Playlist playlist){
         return playlistRepository.save(playlist);
     }
+    public Boolean save(Playlist playlist){
+        if(playlist != null){
+            playlistRepository.save(playlist);
+            return true;
+        }
+        else
+            return false;
+    }
+    public Playlist findPlaylistById(Long id){
+        return playlistRepository.findById(id).orElse(null);
+    }
 }

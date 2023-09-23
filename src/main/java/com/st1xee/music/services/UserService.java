@@ -30,30 +30,22 @@ public class UserService {
     public List<User> allUsers(){
         return userRepository.findAll();
     }
-//    public void ban(Long id){
-//        User user = getUserById(id);
-//        if(user.isActive()){
-//            user.setActive(false);
-//            updateUser(user);
-//        }else{
-//            user.setActive(true);
-//            updateUser(user);
-//        }
-//    }
-//    public void changeRole(Long id){
-//        User user = getUserById(id);
-//        Set<Roles> role = user.getRoles();
-//        if(user.isAdmin()){
-//            role.clear();
-//            role.add(Role.ROLE_USER);
-//            updateUser(user);
-//        }
-//        else{
-//            role.clear();
-//            role.add(Role.ROLE_ADMIN);
-//            updateUser(user);
-//        }
-//    }
+    public void ban(Long id){
+        User user = getUserById(id);
+        if(user.isActive()){
+            user.setActive(false);
+            updateUser(user);
+        }else{
+            user.setActive(true);
+            updateUser(user);
+        }
+    }
+    public void updateUserRole(Long userId, Roles role){
+        User user = getUserById(userId);
+        user.getRoles().clear();
+        user.getRoles().add(role);
+        updateUser(user);
+    }
     public boolean createUser(User user){
         if(userRepository.findByEmail(user.getEmail()) != null){
             return false;
@@ -66,12 +58,15 @@ public class UserService {
             user.getRoles().add(Roles.USER);
         }
 
+        userRepository.save(user);
+
         Playlist defaultPlaylist = new Playlist();
         defaultPlaylist.setTitle("default");
         defaultPlaylist.setArtist(user);
         user.getPlaylists().add(playlistService.createPlaylist(defaultPlaylist));
 
         userRepository.save(user);
+
         return true;
     }
     public User getUserByPrincipal(Principal principal){

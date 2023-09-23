@@ -36,7 +36,7 @@ let songIndex = songId
 
 
 function loadSong(song) {
-    audio.src = '/api/albums/' + song.id + '/play'
+    audio.src = '/api/songs/' + song.id + '/play'
     name.innerHTML = song.title
     previewImg.src = `/images/${song.preview}`
     player.style.backgroundImage = `url(/images/${song.preview})`
@@ -45,8 +45,12 @@ function loadSong(song) {
 
 
 }
-loadSong(albumForPlaying[songIndex])
 
+loadSong(albumForPlaying[songIndex])
+audio.addEventListener('canplaythrough', () => {
+    playSong();
+});
+// playSong()
 function playSong(){
     playerStructure.classList.add('play')
     imgSrc.style.opacity = 0;
@@ -153,13 +157,13 @@ function setProgress(e){
     audio.currentTime = (clickX/width) * duration
 }
 progressContainer.addEventListener('click', setProgress)
-// audio.addEventListener('ended', () =>{
-//     if(isRepeat){
-//         repeatSong()
-//     }else{
-//         nextSong()
-//     }
-// })
+audio.addEventListener('ended', () =>{
+    if(isRepeat){
+        repeatSong()
+    }else{
+        nextSong()
+    }
+})
 
 
 

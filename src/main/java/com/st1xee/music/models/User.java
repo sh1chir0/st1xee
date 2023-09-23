@@ -43,7 +43,7 @@ public class User  implements UserDetails{
     private Set<Roles> roles = new HashSet<>();
     @OneToOne
     private Image image;
-    @OneToMany(mappedBy = "artist")
+    @OneToMany(mappedBy = "artist", fetch = FetchType.EAGER)
     private List<Playlist> playlists = new ArrayList<>();
     @OneToMany(mappedBy = "artist")
     private List<Song> songs;

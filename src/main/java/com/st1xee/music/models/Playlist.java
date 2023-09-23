@@ -25,7 +25,7 @@ public class Playlist {
     private Long id;
     @Column(name = "title")
     private String title;
-    @ManyToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Song> songs;
     @ManyToOne
     private User artist;

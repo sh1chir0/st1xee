@@ -1,21 +1,21 @@
+import { updatePlaylist } from './playlist.js';
+
 const menuButton = document.querySelector('#menu-button'),
     workStation = document.querySelector('.work-station')
+let shazamButton = document.querySelector('#shazam-button')
 
+function updateShazamButtonListener() {
+    shazamButton.addEventListener('click', () => {
+        workStation.innerHTML = '';
+        $.ajax({
+            url: '/api/albums/shazam',
+            method: 'GET',
+            success: function(response) {
+                const album = response;
 
-const shazamButton = document.querySelector('#shazam-button');
-
-shazamButton.addEventListener('click', () => {
-    workStation.innerHTML = '';
-    // Виконуємо AJAX-запит до сервера
-    $.ajax({
-        url: '/api/albums/shazam',
-        method: 'GET',
-        success: function(response) {
-            const album = response;
-
-            const albumContainer = document.createElement('div');
-            albumContainer.className = 'album-container';
-            albumContainer.innerHTML = `
+                const albumContainer = document.createElement('div');
+                albumContainer.className = 'album-container';
+                albumContainer.innerHTML = `
             <div class="album" id="album">
                 <div class="album-header">
                     <div class="album-preview">
@@ -49,24 +49,25 @@ shazamButton.addEventListener('click', () => {
                 <hr>
             </div>
         `;
-            workStation.appendChild(albumContainer);
-            const albumElement = document.getElementById('album');
-            albumElement.style.backgroundImage = `url('/images/${album.previewId}')`;
+                workStation.appendChild(albumContainer);
+                const albumElement = document.getElementById('album');
+                albumElement.style.backgroundImage = `url('/images/${album.previewId}')`;
 
 
 
-            const albumSongsBlock = document.getElementById('album-songs');
-            for (let i = 0; i < album.songsDTO.length; i++) {
-                const song = album.songsDTO[i];
+                const albumSongsBlock = document.getElementById('album-songs');
+                for (let i = 0; i < album.songsDTO.length; i++) {
+                    const song = album.songsDTO[i];
 
-                const songBlock = document.createElement('div');
-                songBlock.className = 'song-block';
+                    const songBlock = document.createElement('div');
+                    songBlock.className = 'song-block';
 
-                const playBtnId = `play-btn-${i}`;
-                songBlock.innerHTML = `
+                    const playBtnId = `play-btn-${i}`;
+                    const heartIconId = `heart-icon-${i}`
+                    songBlock.innerHTML = `
                         <div class="number">
                             <p>${i+1}</p>
-                            <button id="${playBtnId}"><i class="fa-solid fa-play play-ic"></i></button>
+                           <i id="${playBtnId}" class="fa-solid fa-play play-ic"></i>
                         </div>
                         <div class="name-block">
                             <div class="title">
@@ -76,21 +77,78 @@ shazamButton.addEventListener('click', () => {
                                 <button>${song.artistNickname}</button>
                             </div>
                         </div>
+                        <div class="heart">
+                                <i id="${heartIconId}" class="fa-regular fa-heart"></i>
+                        </div>
                         <div class="time">
                             <p>${song.duration}</p>
                         </div>
                     `;
-                albumSongsBlock.appendChild(songBlock);
-                const playBtn = document.getElementById(playBtnId)
-                playBtn.addEventListener('click', ()=>{
-                    localStorage.setItem('albumForPlaying', JSON.stringify(album.songsDTO))
-                    localStorage.setItem('songId', JSON.stringify(i))
+                    albumSongsBlock.appendChild(songBlock);
 
-                    workStation.innerHTML = '';
-                    const playerContainer = document.createElement('div')
-                    playerContainer.className = 'player';
-                    playerContainer.id = 'player';
-                    playerContainer.innerHTML = `
+
+
+
+
+
+                    const heartIcon = document.getElementById(heartIconId)
+
+                    const playlist = JSON.parse(localStorage.getItem('playlist'))
+                    let isContained = playlist.some(function(item) {
+                        return item.id === song.id;
+                    });
+                    if(isContained){
+                        heartIcon.classList.remove("fa-regular");
+                        heartIcon.classList.add("fa-solid");
+                    } else{
+                        heartIcon.classList.remove("fa-solid");
+                        heartIcon.classList.add("fa-regular");
+                    }
+
+                    heartIcon.addEventListener('click', () => {
+                        const isRegular = heartIcon.classList.contains("fa-regular");
+
+                        if(isRegular){
+                            $.ajax({
+                                url: `/api/songs/add-song/${song.id}`,
+                                type: 'POST',
+                                success: function (response) {
+                                    updatePlaylist()
+                                    heartIcon.classList.remove("fa-regular")
+                                    heartIcon.classList.add("fa-solid")
+                                },
+                                error: function (error) {
+                                    console.log('Error:', error);
+                                }
+                            })
+                        }
+                        else{
+                            $.ajax({
+                                url: `/api/songs/delete-song/${song.id}`,
+                                type: 'POST',
+                                success: function (response){
+                                    updatePlaylist()
+                                    heartIcon.classList.remove("fa-solid")
+                                    heartIcon.classList.add("fa-regular")
+                                },
+                                error: function (error){
+                                    console.log('Error:', error);
+                                }
+                            })
+                        }
+                    });
+
+
+                        const playBtn = document.getElementById(playBtnId)
+                        playBtn.addEventListener('click', ()=>{
+                        localStorage.setItem('albumForPlaying', JSON.stringify(album.songsDTO))
+                        localStorage.setItem('songId', JSON.stringify(i))
+
+                        workStation.innerHTML = '';
+                        const playerContainer = document.createElement('div')
+                        playerContainer.className = 'player';
+                        playerContainer.id = 'player';
+                        playerContainer.innerHTML = `
                         <div class="player-container">
               <div class="song-preview">
                   <img class="song-preview-img" src="/images/${song.id}">
@@ -112,7 +170,6 @@ shazamButton.addEventListener('click', () => {
                       <div class="btn repeat"><img src="../img/repeat.png"></div>
                       <div class="btn heart"><img src="../img/heart.png"></div>
                   </div>
-                  <audio class="audio" src="/api/albums/${song.id}/play"></audio>
                   <div class="progress-container">
                       <div class="progress"></div>
                   </div>
@@ -127,22 +184,24 @@ shazamButton.addEventListener('click', () => {
                   </div>
               </div>
           </div>
-          
+
           `;
-                    workStation.appendChild(playerContainer);
-                    loadPlayer()
+
+                        workStation.appendChild(playerContainer);
+                        loadPlayer()
 
 
 
 
-                })
+                    })
+                }
+            },
+            error: function(error) {
+                console.log('Error:', error);
             }
-        },
-        error: function(error) {
-            console.log('Error:', error);
-        }
-    });
-});
+        });
+    })
+}
 
 menuButton.addEventListener('click', () => {
     workStation.innerHTML = '';
@@ -151,38 +210,43 @@ menuButton.addEventListener('click', () => {
     mainMenuDiv.className = 'main-menu';
 
     const menuContent = `
-	<div class="menu">
-	<div class="first-line">
-	<button id="shazam-button">
-	<img src="../img/shazam.png" alt="Button 1">
-	</button>
-	<button>
-	<img src="../img/wrld.png" alt="Button 2">
-	</button>
-	</div>
-	<div class="second-line">
-	<button>
-	<img src="../img/ukraine.png" alt="Button 3">
-	</button>
-	<button>
-	<img src="../img/random.png" alt="Button 4">
-	</button>
-	</div>
-	</div>
+	 <div class="main-menu">
+          <div class="menu">
+              <div class="first-line">
+                  <button  id="shazam-button">
+                      <img src="../img/shazam.png" alt="Button 1">
+                  </button>
+                  <button>
+                      <img src="../img/wrld.png" alt="Button 2">
+                  </button>
+              </div>
+              <div class="second-line">
+                  <button>
+                      <img src="../img/ukraine.png" alt="Button 3">
+                  </button>
+                  <button>
+                      <img src="../img/random.png" alt="Button 4">
+                  </button>
+              </div>
+          </div>
+      </div>
 	`;
 
     mainMenuDiv.innerHTML = menuContent;
     workStation.appendChild(mainMenuDiv);
 
-});
+    shazamButton = mainMenuDiv.querySelector('#shazam-button');
+    updateShazamButtonListener()
 
-async function loadPlayer() {
+});
+updateShazamButtonListener()
+
+export async function loadPlayer() {
     const version = Date.now();
     const playerScript = document.createElement('script');
     playerScript.src = `./js/player.js?ver=${version}`;
     playerScript.type = 'module';
 
-    // Видаліть старий скрипт, якщо він існує
     const existingPlayerScript = document.querySelector('script[type="module"][src^="/js/player.js"]');
     if (existingPlayerScript) {
         existingPlayerScript.remove();
