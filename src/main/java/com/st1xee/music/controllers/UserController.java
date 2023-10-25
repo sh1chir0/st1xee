@@ -60,7 +60,7 @@ public class UserController {
         User user = userService.getUserByPrincipal(principal);
         if(passwordEncoder.matches(oldPassword, user.getPassword())){
             user.setPassword(passwordEncoder.encode(newPassword));
-            userService.updateUser(user);
+            userService.saveUser(user);
             return ("redirect:/user-page");
         }
         else{

@@ -34,17 +34,17 @@ public class UserService {
         User user = getUserById(id);
         if(user.isActive()){
             user.setActive(false);
-            updateUser(user);
+            saveUser(user);
         }else{
             user.setActive(true);
-            updateUser(user);
+            saveUser(user);
         }
     }
     public void updateUserRole(Long userId, Roles role){
         User user = getUserById(userId);
         user.getRoles().clear();
         user.getRoles().add(role);
-        updateUser(user);
+        saveUser(user);
     }
     public boolean createUser(User user){
         if(userRepository.findByEmail(user.getEmail()) != null){
@@ -90,7 +90,7 @@ public class UserService {
     public User getUserByEmail(String email){
         return userRepository.getUserByEmail(email);
     }
-    public boolean updateUser(User user){
+    public boolean saveUser(User user){
         if(user != null){
             userRepository.save(user);
             return true;
@@ -106,14 +106,44 @@ public class UserService {
             user.setPhoneNumber(updatedUser.getPhoneNumber());
         if(getUserByNickname(updatedUser.getNickname()) == null || getUserByNickname(updatedUser.getNickname()) == user)
             user.setNickname(updatedUser.getNickname());
-        updateUser(user);
-
+        saveUser(user);
     }
+    public boolean updateNickname(User user, String nickname) {
+        if (getUserByNickname(nickname) == null){
+            user.setNickname(nickname);
+            saveUser(user);
+            return true;
+        }
+        return false;
+    }
+    public boolean updateEmail(User user, String email){
+        if(getUserByEmail(email) == null){
+            user.setEmail(email);
+            saveUser(user);
+            return true;
+        }
+        return false;
+    }
+    public boolean updatePhone(User user, String phone){
+        if(getUserByPhoneNumber(phone) == null){
+            user.setPhoneNumber(phone);
+            saveUser(user);
+            return true;
+        }
+        return false;
+    }
+
     public void updateAvatar(MultipartFile avatar, Principal principal) throws IOException{
         User user = getUserByPrincipal(principal);
         if(avatar != null){
             user.setImage(imageService.add(avatar));
         }
-        updateUser(user);
+        saveUser(user);
+    }
+    public void updateAvatar(MultipartFile avatar, User user) throws IOException{
+        if(avatar != null){
+            user.setImage(imageService.add(avatar));
+        }
+        saveUser(user);
     }
 }

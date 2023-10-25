@@ -1,7 +1,8 @@
 import { updatePlaylist } from './playlist.js';
 
 const menuButton = document.querySelector('#menu-button'),
-    workStation = document.querySelector('.work-station')
+    workStation = document.querySelector('.work-station'),
+    logotype = document.getElementById('logotype')
 let shazamButton = document.querySelector('#shazam-button')
 
 function updateShazamButtonListener() {
@@ -74,11 +75,11 @@ function updateShazamButtonListener() {
                                 <p>${song.title}</p>
                             </div>
                             <div class="artist">
-                                <button>${song.artistNickname}</button>
+                                <a href="/artist/${song.artistId}" class="artist-link">${song.artistNickname}</a>
                             </div>
                         </div>
                         <div class="heart">
-                                <i id="${heartIconId}" class="fa-regular fa-heart"></i>
+                                <i id="${heartIconId}" class="fa-regular fa-heart sg-heart"></i>
                         </div>
                         <div class="time">
                             <p>${song.duration}</p>
@@ -254,3 +255,4 @@ export async function loadPlayer() {
 
     document.body.appendChild(playerScript);
 }
+
