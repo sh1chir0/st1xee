@@ -47,48 +47,48 @@ public class SongController {
                              @RequestParam("artist") Long artist,
                              @RequestParam("album") Long album,
                              @RequestParam("preview") MultipartFile preview) {
-        try {
-            Song song = new Song();
-
-            byte[] audioData = file.getBytes();
-
-            if (preview != null) {
-                song.setPreview(imageService.add(preview));
-            }
-            song.setTitle(title);
-            song.setOriginalFileName(file.getOriginalFilename());
-            song.setFileType(file.getContentType());
-            song.setSize(file.getSize());
-            song.setArtist(userService.getUserById(artist));
-            song.setAlbum(albumService.getAlbumById(album));
-            song.setBytes(audioData);
-
-            File tempFile = File.createTempFile("temp_audio", ".mp3");
-            tempFile.deleteOnExit();
-            FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(tempFile));
-
-            try {
-                AudioFile audioFile = AudioFileIO.read(tempFile);
-                if (audioFile != null && audioFile.getAudioHeader() != null) {
-                    int durationSeconds = audioFile.getAudioHeader().getTrackLength();
-                    int minutes = durationSeconds / 60;
-                    int seconds = durationSeconds % 60;
-                    String duration = String.format("%02d:%02d", minutes, seconds);
-                    song.setDuration(duration);
-                } else {
-                    song.setDuration("00:00");
-                }
-            } catch (CannotReadException | IOException | TagException | ReadOnlyFileException |
-                     InvalidAudioFrameException e) {
-                e.printStackTrace();
-                song.setDuration("00:00");
-            }
-
-            songService.saveSong(song);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Song song = new Song();
+//
+//            byte[] audioData = file.getBytes();
+//
+//            if (preview != null) {
+//                song.setPreview(imageService.add(preview));
+//            }
+//            song.setTitle(title);
+//            song.setOriginalFileName(file.getOriginalFilename());
+//            song.setFileType(file.getContentType());
+//            song.setSize(file.getSize());
+//            song.setArtist(userService.getUserById(artist));
+//            song.setAlbum(albumService.getAlbumById(album));
+//            song.setBytes(audioData);
+//
+//            File tempFile = File.createTempFile("temp_audio", ".mp3");
+//            tempFile.deleteOnExit();
+//            FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(tempFile));
+//
+//            try {
+//                AudioFile audioFile = AudioFileIO.read(tempFile);
+//                if (audioFile != null && audioFile.getAudioHeader() != null) {
+//                    int durationSeconds = audioFile.getAudioHeader().getTrackLength();
+//                    int minutes = durationSeconds / 60;
+//                    int seconds = durationSeconds % 60;
+//                    String duration = String.format("%02d:%02d", minutes, seconds);
+//                    song.setDuration(duration);
+//                } else {
+//                    song.setDuration("00:00");
+//                }
+//            } catch (CannotReadException | IOException | TagException | ReadOnlyFileException |
+//                     InvalidAudioFrameException e) {
+//                e.printStackTrace();
+//                song.setDuration("00:00");
+//            }
+//
+//            songService.saveSong(song);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         return "index";
     }
 }

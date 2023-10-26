@@ -14,7 +14,7 @@ let playerStructure = document.querySelector('.player-structure'),
     currentTimeNum = document.querySelector('.current-time'),
     songTime = document.querySelector('.song-time'),
     albumName = document.querySelector('.album-name'),
-    artistNickname = document.querySelector('.artist')
+    artistNickname = document.querySelector('.artist-from-player')
 
 const player = document.getElementById('player');
 
@@ -40,8 +40,8 @@ function loadSong(song) {
     name.innerHTML = song.title
     previewImg.src = `/images/${song.preview}`
     player.style.backgroundImage = `url(/images/${song.preview})`
-    albumName.innerHTML = song.albumTitle
-    artistNickname.innerHTML = song.artistNickname
+    albumName.innerHTML = `${song.albumTitle}`
+    artistNickname.innerHTML = `<p>${song.artistNickname}</p>`
 
 
 }

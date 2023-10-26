@@ -37,4 +37,9 @@ public class AlbumService {
         album.setPreview(imageService.add(file));
         updateAlbum(album);
     }
+    public void updateTitle(Long id, String title){
+        Album album = getAlbumById(id);
+        album.setTitle(title);
+        updateAlbum(album);
+    }
 }

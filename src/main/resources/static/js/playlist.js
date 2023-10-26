@@ -1,4 +1,5 @@
 import { loadPlayer } from "./main.js";
+import { artistButtonsFromPlaylist } from "./artistPage.js";
 
 const songsBlock = document.getElementById("songs"),
       workStation = document.querySelector('.work-station')
@@ -28,6 +29,7 @@ export function updatePlaylist(){
                 const playBtnId = `play-button-${i}`
                 const favBtnId = `fav-button-${i}`
                 const favIconId = `fav-icon-${i}`
+                const artistButtonId = `artist-button-${i+1}`
                 songBlock.innerHTML = `<div class="image">
                   <i class="fa-solid fa-play play-icon"></i>
                      <img id="${playBtnId}" src="/images/${song.preview}">
@@ -37,7 +39,7 @@ export function updatePlaylist(){
                     <p>${song.title}</p>
                   </div>
                   <div class="artist">
-                    <p>${song.artistNickname}</p>
+                    <p id="${artistButtonId}">${song.artistNickname}</p>
                   </div>
                 </div>
                 <div class="favorite-heart" style="display: none;">
@@ -65,10 +67,8 @@ export function updatePlaylist(){
                           <div class="name">
                               <p id="name">${song.title}</p>
                           </div>
-                          <div class="album-name">
-                              <p>${song.albumTitle}</p>
-                          </div>
-                          <div class="artist">
+                          <div class="album-name">${song.albumTitle}</div>
+                          <div class="artist-from-player">
                               <p>${song.artistNickname}</p>
                           </div>
                       </div>
@@ -118,6 +118,8 @@ export function updatePlaylist(){
                     })
                 })
             }
+            artistButtonsFromPlaylist()
+
         },
         error: function(error) {
         console.log('Error:', error);

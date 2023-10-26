@@ -10,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,38 +25,15 @@ public class UserApiController {
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final ArtistOrderService artistOrderService;
+    private final ObjectToDTO objectToDTO = new ObjectToDTO();
 
     @GetMapping("get")
-    public ResponseEntity<UserDTO> addSongToPlaylist(@AuthenticationPrincipal User user) {
-        System.out.println(user.getId());
-        System.out.println(user.getNickname());
-        return ResponseEntity.ok(userToUserDTO(user));
-    }
-
-    private UserDTO userToUserDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPhoneNumber(user.getPhoneNumber());
-        userDTO.setNickname(user.getNickname());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setActive(user.isActive());
-        userDTO.setDateOfCreated(user.getDateOfCreated());
-        Set<Roles> userRoles = user.getRoles();
-        if (!userRoles.isEmpty()) {
-            userDTO.setRole(userRoles.iterator().next().name()); // Встановлюємо першу (і єдину) роль у UserDTO
-        } else {
-            userDTO.setRole(""); // Якщо ролі відсутні, можна встановити пустий рядок або якусь іншу значення за замовчуванням
-        }
-        userDTO.setAvatarId(user.getImage().getId());
+    public ResponseEntity<UserDTO> getUser(@AuthenticationPrincipal User user) {
         ArtistOrder artistOrder = artistOrderService.findArtistOrderByUser(user);
-        if (artistOrder == null)
-            userDTO.setArtistOrder(true);
-        else
-            userDTO.setArtistOrder(false);
-
-        return userDTO;
+        return ResponseEntity.ok(objectToDTO.userToUserDTO(user, artistOrder));
     }
+
+
 
     @PostMapping("/update/avatar")
     public ResponseEntity<String> handleAvatarUpload(@RequestParam("avatar") MultipartFile avatarFile, @AuthenticationPrincipal User user) throws IOException {
