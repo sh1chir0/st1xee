@@ -310,6 +310,9 @@ body {
     margin: 0;
     margin-top: 5px;
 }
+.artist-from-player{
+    cursor: pointer;
+}
 .player-song-name .artist-from-player p{
     font-size: 22px;
     font-weight: 600;
@@ -499,6 +502,9 @@ body {
     color: #535353;
     font-weight: 700;
     font-size: 20px;
+}
+.album-name{
+    cursor: pointer;
 }
 .album-name p{
     font-weight: 700;
@@ -1176,7 +1182,7 @@ body {
 .admin-button{
     display: inline-flex;
 }
-.admin-button button{
+.admin-button button {
     background-color: #212121;
     color: #fff;
     border: none;

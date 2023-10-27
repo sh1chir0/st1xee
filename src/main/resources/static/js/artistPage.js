@@ -1,5 +1,5 @@
 const workStation = document.querySelector('.work-station')
-import { loadAlbum } from "./main.js";
+import { loadAlbumSongs } from './albumPage.js'
 
 export function artistButtonsFromPlaylist(){
     const songsContainer = document.getElementById("songs");
@@ -112,7 +112,7 @@ function openArtistPage(elementId, elementCount) {
                         const albumBackground = document.getElementById(albumBlockId)
                         albumBackground.style.backgroundImage = `url('/images/${album.previewId}')`
 
-                        loadAlbum(album, albumSongsId)
+                        loadAlbumSongs(album, albumSongsId)
 
                     }
                 })

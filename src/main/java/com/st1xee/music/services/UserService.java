@@ -90,6 +90,14 @@ public class UserService {
     public User getUserByEmail(String email){
         return userRepository.getUserByEmail(email);
     }
+    public List<User> getAdmins(){
+        Roles moderator = Roles.MODERATOR;
+        Roles admin = Roles.ADMIN;
+        Roles creator = Roles.CREATOR;
+        return userRepository.findAdmins(moderator, admin, creator);
+    }
+
+
     public boolean saveUser(User user){
         if(user != null){
             userRepository.save(user);
@@ -146,4 +154,5 @@ public class UserService {
         }
         saveUser(user);
     }
+
 }

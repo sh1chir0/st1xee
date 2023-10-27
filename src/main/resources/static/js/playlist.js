@@ -1,5 +1,5 @@
-import { loadPlayer } from "./main.js";
-import { artistButtonsFromPlaylist } from "./artistPage.js";
+import { loadPlayer } from './main.js'
+import { artistButtonsFromPlaylist } from './artistPage.js'
 
 const songsBlock = document.getElementById("songs"),
       workStation = document.querySelector('.work-station')
@@ -127,5 +127,4 @@ export function updatePlaylist(){
     });
 
 }
-
 updatePlaylist()

@@ -6,10 +6,14 @@ import com.st1xee.music.models.ArtistOrder;
 import com.st1xee.music.models.User;
 import com.st1xee.music.services.ArtistOrderService;
 import com.st1xee.music.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,4 +110,14 @@ public class UserApiController {
         artistOrderService.createOrder(artistOrder);
         return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            request.getSession().invalidate();
+        }
+        return ResponseEntity.ok("The account has been logged out");
+    }
+
 }

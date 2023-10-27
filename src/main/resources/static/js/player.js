@@ -1,3 +1,5 @@
+import { enableAlbumButton } from './albumPage.js'
+
 let playerStructure = document.querySelector('.player-structure'),
     prevBtn = document.querySelector('.prev'),
     playBtn = document.querySelector('.play'),
@@ -25,8 +27,6 @@ console.log(songId)
 const imageUrl = "/images/" + albumForPlaying[songId].preview;
 player.style.backgroundImage = `url(${imageUrl})`;
 
-
-const songs = ['my-strange-addiction', 'my-boy', 'idontwannabeyours', 'x-ray', 'cheat-code', 'cuba-libre']
 const prevSongs = []
 
 let isShuffle = false
@@ -41,9 +41,10 @@ function loadSong(song) {
     previewImg.src = `/images/${song.preview}`
     player.style.backgroundImage = `url(/images/${song.preview})`
     albumName.innerHTML = `${song.albumTitle}`
+    albumName.id = `${song.albumId}`
     artistNickname.innerHTML = `<p>${song.artistNickname}</p>`
 
-
+   enableAlbumButton(song.albumId)
 }
 
 loadSong(albumForPlaying[songIndex])
@@ -203,3 +204,6 @@ function repeatSong(){
     loadSong(albumForPlaying[songIndex])
     playSong()
 }
+
+
+

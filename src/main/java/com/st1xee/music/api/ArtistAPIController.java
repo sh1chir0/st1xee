@@ -17,6 +17,7 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,7 @@ class ArtistAPIController {
         return ResponseEntity.ok(listDTO);
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'ARTIST')")
     @PostMapping("/update/album/{id}")
     public ResponseEntity<String> handleTitleUpdate(@RequestParam("albumTitle") String albumTitle, @PathVariable Long id) {
         if (!albumTitle.isEmpty()) {

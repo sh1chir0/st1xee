@@ -75,26 +75,13 @@
             </div>
             <div class="dropdown-menu">
                 <div class="menu-item" data-action="viewUserProfile">Profile</div>
-                <div class="menu-item" data-action="openSettings">Settings</div>
+<!--                <div class="menu-item" data-action="openSettings">Settings</div>-->
+                <div th:if="${adminPanel}" class="menu-item" data-action="openAdminPanel">Admin Panel</div>
+                <div th:if="${artistPanel}" class="menu-item" data-action="openArtistPanel">Artist Panel</div>
                 <div class="menu-item" data-action="logOut">Log Out</div>
-                <div class="menu-item" data-action="openAdminPanel">Admin Panel</div>
-                <div class="menu-item" data-action="openArtistPanel">Artist Panel</div>
             </div>
         </div>
 
-<!--      <div class="account">-->
-<!--        <div class="account-avatar">-->
-<!--          <img src="/img/my-avatar.png">-->
-<!--        </div>-->
-<!--        <div class="account-nickname">-->
-<!--          <p>Sh1chiro</p>-->
-<!--        </div>-->
-<!--        <div class="account-sett">-->
-<!--          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">-->
-<!--            <path d="M9.25 4.5L6.25 7.5L3.25 4.5" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>-->
-<!--          </svg>-->
-<!--        </div>-->
-<!--      </div>-->
     </div>
 
     <audio class="audio" src="/api/songs/1/play"></audio>

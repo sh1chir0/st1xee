@@ -57,8 +57,18 @@ public class AlbumAPIController {
         return ResponseEntity.ok(objectToDTO.songToSongDTO(playlist));
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<AlbumDTO> getAlbum(@PathVariable Long id){
+        return ResponseEntity.ok(objectToDTO.albumToAlbumDTO(albumService.getAlbumById(id)));
+    }
 
-
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<String> deleteAlbum(@PathVariable Long id){
+        if(albumService.deleteAlbum(id))
+            return ResponseEntity.ok("The album has been deleted");
+        else
+            return ResponseEntity.badRequest().body("An error occurred while deleting the album");
+    }
 
 }
 

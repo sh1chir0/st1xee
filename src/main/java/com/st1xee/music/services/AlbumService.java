@@ -19,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AlbumService {
     private final AlbumRepository albumRepository;
+    private final SongService songService;
     private final ImageService imageService;
     public void createAlbum(Album album){
         albumRepository.save(album);
@@ -41,5 +42,17 @@ public class AlbumService {
         Album album = getAlbumById(id);
         album.setTitle(title);
         updateAlbum(album);
+    }
+
+    public boolean deleteAlbum(Long id){
+        Album album = getAlbumById(id);
+        if(album.getSongs() != null){
+            for (int i = 0; i < album.getSongs().size(); i++) {
+                songService.deleteSong(album.getSongs().get(i).getId());
+            }
+        }
+        albumRepository.delete(album);
+
+        return getAlbumById(id) == null;
     }
 }

@@ -56,7 +56,7 @@ public class ObjectToDTO {
         userDTO.setDateOfCreated(user.getDateOfCreated());
         Set<Roles> userRoles = user.getRoles();
         if (!userRoles.isEmpty()) {
-            userDTO.setRole(userRoles.iterator().next().name());
+            userDTO.setRole(userRoles.iterator().next().name().toLowerCase());
         } else {
             userDTO.setRole("");
         }
@@ -67,6 +67,13 @@ public class ObjectToDTO {
             userDTO.setArtistOrder(false);
 
         return userDTO;
+    }
+    public List<UserDTO> toUserDTOList(List<User> userList){
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (User user : userList) {
+            userDTOList.add(userToUserDTO(user, new ArtistOrder()));
+        }
+        return userDTOList;
     }
     public ArtistDTO artistToArtistDTO(User artist){
         ArtistDTO artistDTO = new ArtistDTO();
