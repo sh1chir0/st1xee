@@ -4,8 +4,12 @@ import com.st1xee.music.enums.Roles;
 import com.st1xee.music.models.Playlist;
 import com.st1xee.music.models.User;
 import com.st1xee.music.repositories.UserRepository;
+import com.sun.security.auth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.parser.Authorization;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,13 +36,8 @@ public class UserService {
     }
     public void ban(Long id){
         User user = getUserById(id);
-        if(user.isActive()){
-            user.setActive(false);
-            saveUser(user);
-        }else{
-            user.setActive(true);
-            saveUser(user);
-        }
+        user.setActive(!user.isActive());
+        saveUser(user);
     }
     public void updateUserRole(Long userId, Roles role){
         User user = getUserById(userId);
@@ -53,7 +52,7 @@ public class UserService {
         user.setActive(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if(user.getEmail().equals("pavel.dereyes@gmail.com")){
-            user.getRoles().add(Roles.ADMIN);
+            user.getRoles().add(Roles.CREATOR);
         }else{
             user.getRoles().add(Roles.USER);
         }
@@ -96,7 +95,14 @@ public class UserService {
         Roles creator = Roles.CREATOR;
         return userRepository.findAdmins(moderator, admin, creator);
     }
-
+    public List<User> getArtists(){
+        Roles artist = Roles.ARTIST;
+        return userRepository.findArtists(artist);
+    }
+    public List<User> getUsers(){
+        Roles user = Roles.USER;
+        return userRepository.findUsers(user);
+    }
 
     public boolean saveUser(User user){
         if(user != null){
@@ -116,24 +122,27 @@ public class UserService {
             user.setNickname(updatedUser.getNickname());
         saveUser(user);
     }
-    public boolean updateNickname(User user, String nickname) {
+    public boolean updateNickname(Long id, String nickname) {
         if (getUserByNickname(nickname) == null){
+            User user = getUserById(id);
             user.setNickname(nickname);
             saveUser(user);
             return true;
         }
         return false;
     }
-    public boolean updateEmail(User user, String email){
+    public boolean updateEmail(Long id, String email){
         if(getUserByEmail(email) == null){
+            User user = getUserById(id);
             user.setEmail(email);
             saveUser(user);
             return true;
         }
         return false;
     }
-    public boolean updatePhone(User user, String phone){
-        if(getUserByPhoneNumber(phone) == null){
+    public boolean updatePhone(Long id, String phone) {
+        if (getUserByPhoneNumber(phone) == null) {
+            User user = getUserById(id);
             user.setPhoneNumber(phone);
             saveUser(user);
             return true;
@@ -154,5 +163,13 @@ public class UserService {
         }
         saveUser(user);
     }
+    public void deleteAvatar(Long id){
+        User user = getUserById(id);
+        if(user != null){
+            user.setImage(imageService.getImageById(1L));
+            saveUser(user);
+        }
+    }
+
 
 }

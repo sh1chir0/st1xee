@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -17,5 +19,12 @@ public class ArtistOrderService {
     }
     public ArtistOrder findArtistOrderByUser(User user){
         return artistOrderRepository.findArtistOrderByUser(user);
+    }
+    public List<ArtistOrder> getAll(){
+        return artistOrderRepository.findAll();
+    }
+    public void deleteOrder(User user){
+        ArtistOrder artistOrder = findArtistOrderByUser(user);
+        artistOrderRepository.delete(artistOrder);
     }
 }

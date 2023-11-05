@@ -18,8 +18,6 @@ public class ArtistOrder {
     private Long id;
     @OneToOne
     private User user;
-    @Column(name = "status")
-    private boolean status = false;
     @Column(name = "dateOfCreated")
     private LocalDateTime dateOfCreated;
     @PrePersist

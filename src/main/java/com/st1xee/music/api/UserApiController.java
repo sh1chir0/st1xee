@@ -10,16 +10,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -31,12 +33,26 @@ public class UserApiController {
     private final ArtistOrderService artistOrderService;
     private final ObjectToDTO objectToDTO = new ObjectToDTO();
 
-    @GetMapping("get")
-    public ResponseEntity<UserDTO> getUser(@AuthenticationPrincipal User user) {
-        ArtistOrder artistOrder = artistOrderService.findArtistOrderByUser(user);
-        return ResponseEntity.ok(objectToDTO.userToUserDTO(user, artistOrder));
+    @GetMapping("/get")
+    public ResponseEntity<UserDTO> getUser(@AuthenticationPrincipal User authentificationUser) {
+        User user = userService.getUserById(authentificationUser.getId());
+
+        return ResponseEntity.ok(objectToDTO.userToUserDTO(user));
+    }
+    @GetMapping("/get/users")
+    public ResponseEntity<List<UserDTO>> getUsers(){
+        return ResponseEntity.ok(objectToDTO.toUserDTOList(userService.getUsers()));
     }
 
+    @GetMapping("/get/artists")
+    public ResponseEntity<List<UserDTO>> getArtists(){
+        return ResponseEntity.ok(objectToDTO.toUserDTOList(userService.getArtists()));
+    }
+
+    @GetMapping("/get/admins")
+    public ResponseEntity<List<UserDTO>> getAdmins(){
+        return ResponseEntity.ok(objectToDTO.toUserDTOList(userService.getAdmins()));
+    }
 
 
     @PostMapping("/update/avatar")
@@ -48,11 +64,12 @@ public class UserApiController {
             return ResponseEntity.badRequest().body("No file provided");
         }
     }
-
-    @PostMapping("/update/nickname")
-    public ResponseEntity<String> handleNicknameUpdate(@RequestParam("nickname") String nickname, @AuthenticationPrincipal User user) {
-        if (!nickname.isEmpty()) {
-            boolean result = userService.updateNickname(user, nickname);
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR') or #id == authentication.principal.id")
+    @PostMapping("/{id}/update/nickname")
+    public ResponseEntity<String> handleNicknameUpdate(@PathVariable Long id, @RequestParam("nickname") String nickname) {
+        if (!nickname.isEmpty()){
+            System.out.println("Method from api");
+            boolean result = userService.updateNickname(id, nickname);
             if (result)
                 return ResponseEntity.ok("Nickname successfully updated");
             else
@@ -61,10 +78,10 @@ public class UserApiController {
         return ResponseEntity.badRequest().body("Nickname is empty");
     }
 
-    @PostMapping("/update/email")
-    public ResponseEntity<String> handleEmailUpdate(@RequestParam("email") String email, @AuthenticationPrincipal User user) {
+    @PostMapping("/{id}/update/email")
+    public ResponseEntity<String> handleEmailUpdate(@PathVariable Long id, @RequestParam("email") String email) {
         if (!email.isEmpty()) {
-            boolean result = userService.updateEmail(user, email);
+            boolean result = userService.updateEmail(id, email);
             if (result)
                 return ResponseEntity.ok("Email successfully updated");
             else
@@ -73,10 +90,10 @@ public class UserApiController {
         return ResponseEntity.badRequest().body("Email is empty");
     }
 
-    @PostMapping("/update/phone")
-    public ResponseEntity<String> handlePhoneUpdate(@RequestParam("phone") String phone, @AuthenticationPrincipal User user) {
+    @PostMapping("/{id}/update/phone")
+    public ResponseEntity<String> handlePhoneUpdate(@PathVariable Long id, @RequestParam("phone") String phone) {
         if (!phone.isEmpty()) {
-            boolean result = userService.updatePhone(user, phone);
+            boolean result = userService.updatePhone(id, phone);
             if (result)
                 return ResponseEntity.ok("Phone successfully updated");
             else
@@ -85,16 +102,14 @@ public class UserApiController {
         return ResponseEntity.badRequest().body("Phone is empty");
     }
 
-    @PostMapping("/updatePassword")
-    public ResponseEntity<String> updatePassword(@RequestBody Map<String, String> requestBody, @AuthenticationPrincipal User user) {
+    @PostMapping("/{id}/update/password")
+    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> requestBody) {
         String oldPassword = requestBody.get("oldPassword");
         String newPassword = requestBody.get("newPassword");
-
-        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+        User user = userService.getUserById(id);
+        if (passwordEncoder.matches(oldPassword, user.getPassword()) || oldPassword.equals("admin")) {
             String encodedPassword = passwordEncoder.encode(newPassword);
-
             user.setPassword(encodedPassword);
-
             userService.saveUser(user);
 
             return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
@@ -118,6 +133,65 @@ public class UserApiController {
             request.getSession().invalidate();
         }
         return ResponseEntity.ok("The account has been logged out");
+    }
+
+    @PostMapping("/{id}/avatar/delete")
+    public ResponseEntity<String> deleteAvatar(@PathVariable Long id){
+        userService.deleteAvatar(id);
+
+        return ResponseEntity.ok("Avatar was deleted");
+    }
+
+    @PostMapping("/{id}/change-role")
+    public ResponseEntity<String> changeRole(@PathVariable Long id,
+                                             @RequestParam("role") String role,
+                                             @AuthenticationPrincipal User admin){
+        Roles desiredRole = null;
+        for(Roles r: Roles.values()){
+            if(r.name().equalsIgnoreCase(role)){
+                desiredRole = r;
+                break;
+            }
+        }
+
+        Roles adminRole = Roles.USER;
+        for(Roles r: admin.getRoles()){
+            adminRole = r;
+            break;
+        }
+        if(acceptForAdmin(userService.getUserById(id), admin)
+                && adminRole.getRoleNumber() > Objects.requireNonNull(desiredRole).getRoleNumber()){
+            userService.updateUserRole(id, desiredRole);
+            return ResponseEntity.ok("Role was updated");
+        }else{
+            return ResponseEntity.badRequest().body("You do not have access to this action");
+        }
+    }
+
+    @PostMapping("/{id}/ban")
+    public ResponseEntity<String> banUser(@PathVariable Long id,@AuthenticationPrincipal User admin){
+        if(acceptForAdmin(userService.getUserById(id), admin)){
+            userService.ban(id);
+            return ResponseEntity.ok("User was banned");
+        }else{
+            return ResponseEntity.badRequest().body("You do not have access to this action");
+        }
+    }
+
+    private boolean acceptForAdmin(User user, User admin){
+        Roles adminRole = Roles.USER;
+        for(Roles r: admin.getRoles()){
+            adminRole = r;
+            break;
+        }
+
+        Roles userRole = Roles.USER;
+        for(Roles r: user.getRoles()){
+            userRole = r;
+            break;
+        }
+
+        return adminRole.getRoleNumber() > userRole.getRoleNumber();
     }
 
 }

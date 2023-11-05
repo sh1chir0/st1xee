@@ -70,16 +70,13 @@ function viewUserProfile() {
                     <button class="save-button" id="savePassword">Save</button>
                 </div>
 
-                ${data.artistOrder ? `
                 <div class="block">
                     <div class="input-block">
                         <label for="artist-role">Get the status of a singer:</label>
                     </div>
-                    
                     <button class="save-button" id="getArtistStatus">Get</button>
-                    
                 </div>
-                ` : ''}
+                
 
                 <div class="space"></div>
             `;
@@ -88,10 +85,28 @@ function viewUserProfile() {
 
 
             document.querySelector('.save-button').addEventListener('click', handleAvatarUpload);
-            document.getElementById('saveNickname').addEventListener('click', saveNickname);
-            document.getElementById('saveEmail').addEventListener('click', saveEmail);
-            document.getElementById('savePhone').addEventListener('click', savePhone);
-            document.getElementById('savePassword').addEventListener('click', savePassword);
+
+            document.getElementById('saveNickname').addEventListener('click', () => {
+                const nickname = document.getElementById('nickname').value
+                changeUserNickname(data.id, nickname, viewUserProfile)
+            });
+
+            document.getElementById('saveEmail').addEventListener('click', () => {
+                const email = document.getElementById('email').value
+                changeUserEmail(data.id, email, viewUserProfile)
+            });
+
+            document.getElementById('savePhone').addEventListener('click', () => {
+                const phone = document.getElementById('phone').value
+                changeUserPhone(data.id, phone, viewUserProfile)
+            });
+
+            document.getElementById('savePassword').addEventListener('click', () => {
+                const oldPassword = document.getElementById('old-password').value;
+                const newPassword = document.getElementById('new-password').value;
+
+                changeUserPassword(data.id, oldPassword, newPassword, logOut)
+            })
             document.getElementById('getArtistStatus').addEventListener('click', getArtistStatus);
         })
         .catch(error => {
@@ -123,9 +138,20 @@ function handleAvatarUpload() {
             });
     }
 }
-function saveNickname() {
-    const nickname = document.getElementById('nickname').value;
-    fetch('/api/user/update/nickname', {
+
+export function deleteAvatar(id, func){
+    fetch(`/api/user/${id}/avatar/delete`, {
+        method: 'POST',
+    })
+        .then(response => {
+            if(response.ok){
+                func()
+            }
+        })
+}
+
+export function changeUserNickname(id, nickname, func) {
+    fetch(`/api/user/${id}/update/nickname`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -134,7 +160,7 @@ function saveNickname() {
     })
         .then(response => {
             if (response.ok) {
-                viewUserProfile();
+                func()
             } else {
                 console.error('Помилка при завантаженні файлу:', response.status);
             }
@@ -144,9 +170,8 @@ function saveNickname() {
         });
 }
 
-function saveEmail() {
-    const email = document.getElementById('email').value;
-    fetch('/api/user/update/email', {
+export function changeUserEmail(id, email, func) {
+    fetch(`/api/user/${id}/update/email`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -155,7 +180,7 @@ function saveEmail() {
     })
         .then(response => {
             if (response.ok) {
-                viewUserProfile();
+                func();
             } else {
                 console.error('Помилка при завантаженні файлу:', response.status);
             }
@@ -165,18 +190,17 @@ function saveEmail() {
         });
 }
 
-function savePhone() {
-    const phone = document.getElementById('phone').value;
-    fetch('/api/user/update/phone', {
+export function changeUserPhone(id, phoneNumber, func) {
+    fetch(`/api/user/${id}/update/phone`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: 'phone=' + encodeURIComponent(phone)
+        body: 'phone=' + encodeURIComponent(phoneNumber)
     })
         .then(response => {
             if (response.ok) {
-                viewUserProfile();
+                func()
             } else {
                 console.error('Помилка при завантаженні файлу:', response.status);
             }
@@ -186,19 +210,13 @@ function savePhone() {
         });
 }
 
-function savePassword() {
-    // Отримайте старий та новий паролі з полів вводу
-    const oldPassword = document.getElementById('old-password').value;
-    const newPassword = document.getElementById('new-password').value;
-
-    // Створіть об'єкт для відправки на сервер
+export function changeUserPassword(id, oldPassword, newPassword, func) {
     const data = {
         oldPassword: oldPassword,
         newPassword: newPassword
     };
 
-    // Отправка старого і нового паролів на сервер через AJAX запит
-    fetch('/api/user/updatePassword', {
+    fetch(`/api/user/${id}/update/password`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -207,7 +225,7 @@ function savePassword() {
     })
         .then(response => {
             if (response.status === 200) {
-                console.log('Password updated successfully');
+                func()
             } else {
                 console.error('Password update failed');
             }
@@ -217,34 +235,53 @@ function savePassword() {
         });
 }
 
+export function changeUserRole(id, role, func){
+    fetch(`/api/user/${id}/change-role`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'role=' + encodeURIComponent(role)
+    })
+        .then(response => {
+            if(response.ok){
+                func()
+            }
+    })
+}
+
+export function banUser(id, func){
+    fetch(`/api/user/${id}/ban`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+    })
+        .then(response => {
+            if(response.ok){
+                func()
+            }
+        })
+}
+
 function getArtistStatus() {
     const isConfirmed = window.confirm("Are you sure you want to perform this action?");
 
     if (isConfirmed) {
-        sendArtistStatusRequest();
-    }
-}
-function sendArtistStatusRequest() {
-
-    fetch('/api/user/get-status', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-        .then(response => {
-            if (response.ok) {
-                // Обробити успішну відповідь від сервера, наприклад, оновити інформацію на сторінці
-                // Можливо, ви захочете відобразити статус артиста або вжити інші дії.
-            } else {
-                console.error('Request failed with status', response.status);
-                // Можливо, ви захочете обробити помилку, якщо запит не був успішним.
-            }
+        fetch('/api/user/get-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
         })
-        .catch(error => {
-            console.error('Request error:', error);
-            // Обробити помилку під час виконання запиту.
-        });
+            .then(response => {
+                if (response.ok) {
+
+                } else {
+                    console.error('Request failed with status', response.status);
+                }
+            })
+    }
 }
 
 // function openSettings() {

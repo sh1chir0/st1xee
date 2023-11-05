@@ -19,4 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE :moderator MEMBER OF u.roles OR :admin MEMBER OF u.roles OR :creator MEMBER OF u.roles")
     List<User> findAdmins(@Param("moderator") Roles moderator, @Param("admin") Roles admin, @Param("creator") Roles creator);
+    @Query("SELECT u FROM User u WHERE :artist MEMBER OF u.roles")
+    List<User> findArtists(@Param("artist") Roles artist);
+    @Query("SELECT u FROM User u WHERE :user MEMBER OF u.roles")
+    List<User> findUsers(@Param("user") Roles user);
 }

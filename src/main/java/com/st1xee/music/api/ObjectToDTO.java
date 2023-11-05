@@ -45,7 +45,7 @@ public class ObjectToDTO {
         }
         return songDTOs;
     }
-    public UserDTO userToUserDTO(User user, ArtistOrder artistOrder) {
+    public UserDTO userToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setEmail(user.getEmail());
@@ -61,17 +61,13 @@ public class ObjectToDTO {
             userDTO.setRole("");
         }
         userDTO.setAvatarId(user.getImage().getId());
-        if (artistOrder == null)
-            userDTO.setArtistOrder(true);
-        else
-            userDTO.setArtistOrder(false);
 
         return userDTO;
     }
     public List<UserDTO> toUserDTOList(List<User> userList){
         List<UserDTO> userDTOList = new ArrayList<>();
         for (User user : userList) {
-            userDTOList.add(userToUserDTO(user, new ArtistOrder()));
+            userDTOList.add(userToUserDTO(user));
         }
         return userDTOList;
     }

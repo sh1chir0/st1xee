@@ -15,9 +15,8 @@ public class UserDTO {
     private LocalDateTime dateOfCreated;
     private String role;
     private Long avatarId;
-    private boolean artistOrder;
     public UserDTO(){}
-    public UserDTO(Long id, String email, String phoneNumber, String nickname, String password, boolean active, LocalDateTime dateOfCreated, String role, Long avatarId, boolean artistOrder) {
+    public UserDTO(Long id, String email, String phoneNumber, String nickname, String password, boolean active, LocalDateTime dateOfCreated, String role, Long avatarId) {
         this.id = id;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -27,7 +26,6 @@ public class UserDTO {
         this.dateOfCreated = dateOfCreated;
         this.role = role;
         this.avatarId = avatarId;
-        this.artistOrder = artistOrder;
     }
 
     public Long getId() {
@@ -100,13 +98,5 @@ public class UserDTO {
 
     public void setAvatarId(Long avatarId) {
         this.avatarId = avatarId;
-    }
-
-    public boolean isArtistOrder() {
-        return artistOrder;
-    }
-
-    public void setArtistOrder(boolean artistOrder) {
-        this.artistOrder = artistOrder;
     }
 }
