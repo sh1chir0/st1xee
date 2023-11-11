@@ -1,5 +1,6 @@
 package com.st1xee.music.api;
 
+import com.st1xee.music.DTO.SongDTO;
 import com.st1xee.music.models.Playlist;
 import com.st1xee.music.models.Song;
 import com.st1xee.music.models.User;
@@ -20,32 +21,28 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * @author sh1chiro 22.09.2023
  */
 
 @RestController
-@RequestMapping("/api/songs")
+@RequestMapping("/api/song")
 @RequiredArgsConstructor
 //@CrossOrigin
 public class SongAPIController {
     private final SongService songService;
-    private final AlbumService albumService;
-    private final UserService userService;
-    private final PlaylistService playlistService;
+    private final ObjectToDTO objectToDTO = new ObjectToDTO();
 
-    // Метод для відтворення пісні за її ідентифікатором
     @GetMapping("/{songId}/play")
     public ResponseEntity<ByteArrayResource> playSong(@PathVariable Long songId) {
-        // Отримати пісню за ідентифікатором з сервісу
         Song song = songService.getSongById(songId);
 
         if (song == null) {
             return ResponseEntity.notFound().build();
         }
 
-        // Підготовка відповіді для відтворення пісні
         ByteArrayResource resource = new ByteArrayResource(song.getBytes());
 
         HttpHeaders headers = new HttpHeaders();
@@ -60,25 +57,8 @@ public class SongAPIController {
                 .body(resource);
     }
 
-
-    @PostMapping("/add-song/{songId}")
-    public ResponseEntity<String> addSongToPlaylist(@AuthenticationPrincipal User user, @PathVariable Long songId) {
-        Playlist playlist = playlistService.findPlaylistById(user.getId());
-        playlist.getSongs().add(songService.getSongById(songId));
-        if(playlistService.save(playlist)){
-            System.out.println("ok");
-            return new ResponseEntity<>("Song added to playlist", HttpStatus.OK);
-        }
-        else{
-            System.out.println("ne ok");
-            return new ResponseEntity<>("Failed to add song to playlist", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PostMapping("/delete-song/{songId}")
-    public void deleteSongFromPlaylist(@AuthenticationPrincipal User user, @PathVariable Long songId){
-        Playlist playlist = playlistService.findPlaylistById(user.getId());
-        playlist.getSongs().removeIf(song -> Objects.equals(song.getId(), songId));
-        playlistService.save(playlist);
+    @GetMapping("/random")
+    public ResponseEntity<SongDTO> random(){
+        return ResponseEntity.ok(objectToDTO.songToSongDTO(songService.getRandomSong()));
     }
 }

@@ -21,29 +21,32 @@ public class ObjectToDTO {
         albumDTO.setTitle(album.getTitle());
         albumDTO.setArtistNickname(album.getArtist().getNickname());
         albumDTO.setArtistId(album.getArtist().getId());
-        albumDTO.setSongsDTO(songToSongDTO(album.getSongs()));
+        albumDTO.setSongsDTO(songListToSongDTOList(album.getSongs()));
         albumDTO.setTotalSongs(album.getTotalSongs());
         albumDTO.setTotalDuration(album.getTotalDuration());
         albumDTO.setPreviewId(album.getPreview().getId());
         return albumDTO;
     }
-    public List<SongDTO> songToSongDTO(List<Song> songs){
+    public List<SongDTO> songListToSongDTOList(List<Song> songs){
         List<SongDTO> songDTOs = new ArrayList<>();
         for(Song song: songs){
-            SongDTO songDTO = new SongDTO();
-            songDTO.setId(song.getId());
-            songDTO.setTitle(song.getTitle());
-            songDTO.setArtistId(song.getArtist().getId());
-            songDTO.setArtistNickname(song.getArtist().getNickname());
-            if(song.getAlbum() != null){
-                songDTO.setAlbumId(song.getAlbum().getId());
-                songDTO.setAlbumTitle(song.getAlbum().getTitle());
-            }
-            songDTO.setPreview(song.getPreview().getId());
-            songDTO.setDuration(song.getDuration());
-            songDTOs.add(songDTO);
+            songDTOs.add(songToSongDTO(song));
         }
         return songDTOs;
+    }
+    public SongDTO songToSongDTO(Song song){
+        SongDTO songDTO = new SongDTO();
+        songDTO.setId(song.getId());
+        songDTO.setTitle(song.getTitle());
+        songDTO.setArtistId(song.getArtist().getId());
+        songDTO.setArtistNickname(song.getArtist().getNickname());
+        if(song.getAlbum() != null){
+            songDTO.setAlbumId(song.getAlbum().getId());
+            songDTO.setAlbumTitle(song.getAlbum().getTitle());
+        }
+        songDTO.setPreview(song.getPreview().getId());
+        songDTO.setDuration(song.getDuration());
+        return songDTO;
     }
     public UserDTO userToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();

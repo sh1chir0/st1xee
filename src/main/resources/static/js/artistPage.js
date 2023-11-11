@@ -2,31 +2,31 @@ const workStation = document.querySelector('.work-station')
 import { loadAlbumSongs } from './albumPage.js'
 
 export function artistButtonsFromPlaylist(){
-    const songsContainer = document.getElementById("songs");
-    const songElements = songsContainer.querySelectorAll(".song");
-    const songCount = songElements.length;
+    const songsContainer = document.getElementById("songs")
+    const songElements = songsContainer.querySelectorAll(".song")
+    const songCount = songElements.length
 
     const elementId = 'artist-button-'
-    openArtistPage(elementId, songCount);
+    openArtistPage(elementId, songCount)
 }
 
 export function artistButtonsFromAlbum(pathAlbumBlock){
-    const songsContainer = document.getElementById(pathAlbumBlock);
-    const songElements = songsContainer.querySelectorAll('.song-block');
-    const songCount = songElements.length;
+    const songsContainer = document.getElementById(pathAlbumBlock)
+    const songElements = songsContainer.querySelectorAll('.song-block')
+    const songCount = songElements.length
 
     const elementId = `${pathAlbumBlock}-artist-button-`
-    openArtistPage(elementId, songCount);
+    openArtistPage(elementId, songCount)
 }
 
 
 function openArtistPage(elementId, elementCount) {
     for (let i = 1; i <= elementCount; i++) {
-        const artistElement = elementId + i;
+        const artistElement = elementId + i
         const artistButton = document.getElementById(artistElement)
 
         artistButton.addEventListener('click', (event) => {
-            const artistNickname = event.target.innerText;
+            const artistNickname = event.target.innerText
 
             fetch('/api/artist/get?nickname=' + encodeURIComponent(artistNickname), {
                 method: 'GET',
@@ -36,14 +36,14 @@ function openArtistPage(elementId, elementCount) {
             })
                 .then(response => response.json())
                 .then(data => {
-                    workStation.innerHTML = '';
-                    const artistPage = document.createElement('div');
-                    artistPage.className = 'artist-page';
+                    workStation.innerHTML = ''
+                    const artistPage = document.createElement('div')
+                    artistPage.className = 'artist-page'
                     artistPage.innerHTML = `
                         <div class="album" id="album">
                           <div class="album-header">
                             <div class="album-preview">
-                              <img src="/images/${data.previewId}">
+                              <img src="/image/${data.previewId}">
                             </div>
                             <div class="album-info">
                               <div class="info">
@@ -67,7 +67,7 @@ function openArtistPage(elementId, elementCount) {
 
                     workStation.appendChild(artistPage)
                     const artistBackground = document.getElementById('album')
-                    artistBackground.style.backgroundImage = `url('/images/${data.previewId}')`
+                    artistBackground.style.backgroundImage = `url('/image/${data.previewId}')`
 
                     const albumsBlock = document.querySelector('.albums')
                     for (let j = 0; j < data.albums.length; j++) {
@@ -81,7 +81,7 @@ function openArtistPage(elementId, elementCount) {
                         albumBlock.innerHTML = `
                             <div class="artist-page-album-info">
                               <div class="artist-page-album-info-preview">
-                                <img src="/images/${album.previewId}">
+                                <img src="/image/${album.previewId}">
                               </div>
                               <div class="artist-page-album-info-text">
                                 <div class="artist-page-album-info-title">
@@ -110,7 +110,7 @@ function openArtistPage(elementId, elementCount) {
                         `
                         albumsBlock.appendChild(albumBlock)
                         const albumBackground = document.getElementById(albumBlockId)
-                        albumBackground.style.backgroundImage = `url('/images/${album.previewId}')`
+                        albumBackground.style.backgroundImage = `url('/image/${album.previewId}')`
 
                         loadAlbumSongs(album, albumSongsId)
 

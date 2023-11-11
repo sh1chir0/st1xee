@@ -5,9 +5,9 @@ const workStation = document.querySelector('.work-station')
 
 
 function viewUserProfile() {
-    workStation.innerHTML = '';
-    const userSettings = document.createElement('div');
-    userSettings.className = 'user-settings';
+    workStation.innerHTML = ''
+    const userSettings = document.createElement('div')
+    userSettings.className = 'user-settings'
 
     fetch('/api/user/get', {
         method: 'GET',
@@ -22,7 +22,7 @@ function viewUserProfile() {
 
                 <div class="avatar">
                     <div class="current-avatar">
-                        <img src="/images/${data.avatarId}" alt="Current Avatar">
+                        <img src="/image/${data.avatarId}" alt="Current Avatar">
                     </div>
                     <div class="load-avatar">
                         <input class="form-control" type="file" accept="image/*" id="avatar" name="avatar" required>
@@ -79,48 +79,48 @@ function viewUserProfile() {
                 
 
                 <div class="space"></div>
-            `;
-            userSettings.innerHTML = menuContent;
-            workStation.appendChild(userSettings);
+            `
+            userSettings.innerHTML = menuContent
+            workStation.appendChild(userSettings)
 
 
-            document.querySelector('.save-button').addEventListener('click', handleAvatarUpload);
+            document.querySelector('.save-button').addEventListener('click', handleAvatarUpload)
 
             document.getElementById('saveNickname').addEventListener('click', () => {
                 const nickname = document.getElementById('nickname').value
                 changeUserNickname(data.id, nickname, viewUserProfile)
-            });
+            })
 
             document.getElementById('saveEmail').addEventListener('click', () => {
                 const email = document.getElementById('email').value
                 changeUserEmail(data.id, email, viewUserProfile)
-            });
+            })
 
             document.getElementById('savePhone').addEventListener('click', () => {
                 const phone = document.getElementById('phone').value
                 changeUserPhone(data.id, phone, viewUserProfile)
-            });
+            })
 
             document.getElementById('savePassword').addEventListener('click', () => {
-                const oldPassword = document.getElementById('old-password').value;
-                const newPassword = document.getElementById('new-password').value;
+                const oldPassword = document.getElementById('old-password').value
+                const newPassword = document.getElementById('new-password').value
 
                 changeUserPassword(data.id, oldPassword, newPassword, logOut)
             })
-            document.getElementById('getArtistStatus').addEventListener('click', getArtistStatus);
+            document.getElementById('getArtistStatus').addEventListener('click', getArtistStatus)
         })
         .catch(error => {
-            console.error('Error fetching user profile data:', error);
-        });
+            console.error('Error fetching user profile data:', error)
+        })
 }
 
 function handleAvatarUpload() {
-    const inputElement = document.getElementById('avatar');
-    const file = inputElement.files[0];
+    const inputElement = document.getElementById('avatar')
+    const file = inputElement.files[0]
 
     if (file) {
-        const formData = new FormData();
-        formData.append('avatar', file);
+        const formData = new FormData()
+        formData.append('avatar', file)
 
         fetch('/api/user/update/avatar', {
             method: 'POST',
@@ -128,14 +128,9 @@ function handleAvatarUpload() {
         })
             .then(response => {
                 if (response.ok) {
-                    viewUserProfile();
-                } else {
-                    console.error('Помилка при завантаженні файлу:', response.status);
+                    viewUserProfile()
                 }
             })
-            .catch(error => {
-                console.error('Помилка при відправці запиту:', error);
-            });
     }
 }
 
@@ -161,13 +156,8 @@ export function changeUserNickname(id, nickname, func) {
         .then(response => {
             if (response.ok) {
                 func()
-            } else {
-                console.error('Помилка при завантаженні файлу:', response.status);
             }
         })
-        .catch(error => {
-            console.error('Помилка при відправці запиту:', error);
-        });
 }
 
 export function changeUserEmail(id, email, func) {
@@ -180,14 +170,9 @@ export function changeUserEmail(id, email, func) {
     })
         .then(response => {
             if (response.ok) {
-                func();
-            } else {
-                console.error('Помилка при завантаженні файлу:', response.status);
+                func()
             }
         })
-        .catch(error => {
-            console.error('Помилка при відправці запиту:', error);
-        });
 }
 
 export function changeUserPhone(id, phoneNumber, func) {
@@ -201,20 +186,15 @@ export function changeUserPhone(id, phoneNumber, func) {
         .then(response => {
             if (response.ok) {
                 func()
-            } else {
-                console.error('Помилка при завантаженні файлу:', response.status);
             }
         })
-        .catch(error => {
-            console.error('Помилка при відправці запиту:', error);
-        });
 }
 
 export function changeUserPassword(id, oldPassword, newPassword, func) {
     const data = {
         oldPassword: oldPassword,
         newPassword: newPassword
-    };
+    }
 
     fetch(`/api/user/${id}/update/password`, {
         method: 'POST',
@@ -226,13 +206,8 @@ export function changeUserPassword(id, oldPassword, newPassword, func) {
         .then(response => {
             if (response.status === 200) {
                 func()
-            } else {
-                console.error('Password update failed');
             }
         })
-        .catch(error => {
-            console.error('Error updating password:', error);
-        });
 }
 
 export function changeUserRole(id, role, func){
@@ -265,7 +240,7 @@ export function banUser(id, func){
 }
 
 function getArtistStatus() {
-    const isConfirmed = window.confirm("Are you sure you want to perform this action?");
+    const isConfirmed = window.confirm("Are you sure you want to perform this action?")
 
     if (isConfirmed) {
         fetch('/api/user/get-status', {
@@ -277,27 +252,19 @@ function getArtistStatus() {
             .then(response => {
                 if (response.ok) {
 
-                } else {
-                    console.error('Request failed with status', response.status);
                 }
             })
     }
 }
 
-// function openSettings() {
-//     console.log('Open Settings');
-// }
 
 function logOut() {
     fetch('/api/user/logout', {
         method: 'POST',
     })
         .then(response => {
-            window.location.href = '/login';
+            window.location.href = '/login'
         })
-        .catch(error => {
-            console.error('Помилка запиту: ' + error);
-        });
 }
 
 export function openAdminPanel() {
@@ -321,13 +288,13 @@ let closeTimeout
 menuTrigger.addEventListener('mouseenter', () => {
     dropdownMenu.style.display = 'block'
     if (closeTimeout) {
-        clearTimeout(closeTimeout);
+        clearTimeout(closeTimeout)
     }
 })
 dropdownMenu.addEventListener('mouseenter', () => {
     dropdownMenu.style.display = 'block'
     if (closeTimeout) {
-        clearTimeout(closeTimeout);
+        clearTimeout(closeTimeout)
     }
 })
 menuTrigger.addEventListener('mouseleave', () => {
@@ -339,18 +306,18 @@ dropdownMenu.addEventListener('mouseleave', () => {
     dropdownMenu.style.display = 'none'
 })
 
-const menuItems = document.querySelectorAll('.menu-item');
+const menuItems = document.querySelectorAll('.menu-item')
 const actions = {
     viewUserProfile,
     // openSettings,
     logOut,
     openAdminPanel,
     openArtistPanel
-};
+}
 menuItems.forEach((menuItem) => {
     menuItem.addEventListener('click', () => {
-        const action = menuItem.getAttribute('data-action');
+        const action = menuItem.getAttribute('data-action')
         actions[action]()
-        dropdownMenu.style.display = 'none';
-    });
-});
+        dropdownMenu.style.display = 'none'
+    })
+})

@@ -68,7 +68,6 @@ public class UserApiController {
     @PostMapping("/{id}/update/nickname")
     public ResponseEntity<String> handleNicknameUpdate(@PathVariable Long id, @RequestParam("nickname") String nickname) {
         if (!nickname.isEmpty()){
-            System.out.println("Method from api");
             boolean result = userService.updateNickname(id, nickname);
             if (result)
                 return ResponseEntity.ok("Nickname successfully updated");

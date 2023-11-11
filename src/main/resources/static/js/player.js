@@ -18,14 +18,14 @@ let playerStructure = document.querySelector('.player-structure'),
     albumName = document.querySelector('.album-name'),
     artistNickname = document.querySelector('.artist-from-player')
 
-const player = document.getElementById('player');
+const player = document.getElementById('player')
 
 const albumForPlaying = JSON.parse(localStorage.getItem('albumForPlaying'))
 const songId = JSON.parse(localStorage.getItem('songId'))
 console.log(albumForPlaying)
 console.log(songId)
-const imageUrl = "/images/" + albumForPlaying[songId].preview;
-player.style.backgroundImage = `url(${imageUrl})`;
+const imageUrl = "/image/" + albumForPlaying[songId].preview
+player.style.backgroundImage = `url(${imageUrl})`
 
 const prevSongs = []
 
@@ -36,10 +36,10 @@ let songIndex = songId
 
 
 function loadSong(song) {
-    audio.src = '/api/songs/' + song.id + '/play'
+    audio.src = '/api/song/' + song.id + '/play'
     name.innerHTML = song.title
-    previewImg.src = `/images/${song.preview}`
-    player.style.backgroundImage = `url(/images/${song.preview})`
+    previewImg.src = `/image/${song.preview}`
+    player.style.backgroundImage = `url(/image/${song.preview})`
     albumName.innerHTML = `${song.albumTitle}`
     albumName.id = `${song.albumId}`
     artistNickname.innerHTML = `<p>${song.artistNickname}</p>`
@@ -49,26 +49,25 @@ function loadSong(song) {
 
 loadSong(albumForPlaying[songIndex])
 audio.addEventListener('canplaythrough', () => {
-    playSong();
-});
-// playSong()
+    playSong()
+})
 function playSong(){
     playerStructure.classList.add('play')
-    imgSrc.style.opacity = 0;
+    imgSrc.style.opacity = 0
     audio.play()
     setTimeout(() => {
-        imgSrc.src = '../img/pause.png';
-        imgSrc.style.opacity = 1;
-    }, 150);
+        imgSrc.src = '../img/pause.png'
+        imgSrc.style.opacity = 1
+    }, 150)
 }
 function pauseSong(){
     playerStructure.classList.remove('play')
-    imgSrc.style.opacity = 0;
+    imgSrc.style.opacity = 0
     audio.pause()
     setTimeout(() => {
-        imgSrc.src = '../img/play.png';
-        imgSrc.style.opacity = 1;
-    }, 150);
+        imgSrc.src = '../img/play.png'
+        imgSrc.style.opacity = 1
+    }, 150)
 }
 playBtn.addEventListener('click', () => {
     const isPlaying = playerStructure.classList.contains('play')
@@ -94,8 +93,8 @@ function nextSong(){
     }
     loadSong(albumForPlaying[songIndex])
     setTimeout(() => {
-        nextBtn.style.opacity = 1;
-    }, 150);
+        nextBtn.style.opacity = 1
+    }, 150)
     playSong()
 }
 nextBtn.addEventListener('click', () => {
@@ -103,7 +102,7 @@ nextBtn.addEventListener('click', () => {
 })
 
 function prevSong(){
-    prevBtn.style.opacity = 0;
+    prevBtn.style.opacity = 0
     if(prevSongs.length !== 0 && isShuffle){
         loadSong(albumForPlaying[prevSongs[prevSongs.length - 1]])
         prevSongs.pop()
@@ -116,8 +115,8 @@ function prevSong(){
     }
 
     setTimeout(() => {
-        prevBtn.style.opacity = 1;
-    }, 150);
+        prevBtn.style.opacity = 1
+    }, 150)
 
     playSong()
 }
@@ -130,26 +129,26 @@ function updateProgress(e){
     const progressPercent = (currentTime/duration) * 100
     progress.style.width = progressPercent + '%'
     if (!isNaN(duration)) {
-        const progressPercent = (currentTime / duration) * 100;
-        progress.style.width = progressPercent + "%";
+        const progressPercent = (currentTime / duration) * 100
+        progress.style.width = progressPercent + "%"
         currentTimeNum.innerHTML = formatTime(currentTime)
-        songTime.innerHTML = formatTime(duration);
+        songTime.innerHTML = formatTime(duration)
     }
 }
 
 function formatTime(time) {
-    let min = Math.floor(time / 60);
+    let min = Math.floor(time / 60)
     if (min < 10) {
-        min = `0${min}`;
+        min = `0${min}`
     }
-    let sec = Math.floor(time % 60);
+    let sec = Math.floor(time % 60)
     if (sec < 10) {
-        sec = `0${sec}`;
+        sec = `0${sec}`
     }
-    return `${min}:${sec}`;
+    return `${min}:${sec}`
 }
 
-audio.addEventListener("timeupdate", updateProgress);
+audio.addEventListener("timeupdate", updateProgress)
 
 function setProgress(e){
     const width = this.clientWidth

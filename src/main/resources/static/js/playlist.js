@@ -8,12 +8,12 @@ const songsBlock = document.getElementById("songs"),
 export function updatePlaylist(){
 
     $.ajax({
-        url: '/api/albums/playlist',
+        url: '/api/playlist/',
         method: 'GET',
         success: function(response) {
-            const playlist = response;
+            const playlist = response
             localStorage.setItem('playlist', JSON.stringify(playlist))
-            songsBlock.innerHTML= '';
+            songsBlock.innerHTML= ''
             for (let i = 0; i < playlist.length; i++) {
                 const song = playlist[i]
 
@@ -32,7 +32,7 @@ export function updatePlaylist(){
                 const artistButtonId = `artist-button-${i+1}`
                 songBlock.innerHTML = `<div class="image">
                   <i class="fa-solid fa-play play-icon"></i>
-                     <img id="${playBtnId}" src="/images/${song.preview}">
+                     <img id="${playBtnId}" src="/image/${song.preview}">
                 </div>
                 <div class="name">
                   <div class="song-name">
@@ -54,14 +54,14 @@ export function updatePlaylist(){
                 playBtn.addEventListener('click', ()=>{
                     localStorage.setItem('albumForPlaying', JSON.stringify(playlist))
                     localStorage.setItem('songId', JSON.stringify(i))
-                    workStation.innerHTML = '';
+                    workStation.innerHTML = ''
                     const playerContainer = document.createElement('div')
-                    playerContainer.className = 'player';
-                    playerContainer.id = 'player';
+                    playerContainer.className = 'player'
+                    playerContainer.id = 'player'
                     playerContainer.innerHTML = `
                         <div class="player-container">
                       <div class="song-preview">
-                          <img class="song-preview-img" src="/images/${song.id}">
+                          <img class="song-preview-img" src="/image/${song.id}">
                       </div>
                       <div class="player-song-name">
                           <div class="name">
@@ -93,9 +93,9 @@ export function updatePlaylist(){
                       </div>
                   </div>
         
-                  `;
+                  `
 
-                    workStation.appendChild(playerContainer);
+                    workStation.appendChild(playerContainer)
                     loadPlayer()
                 })
 
@@ -105,7 +105,7 @@ export function updatePlaylist(){
                 const favIcon = document.getElementById(favIconId)
                 favBtn.addEventListener('click', () => {
                     $.ajax({
-                        url: `/api/songs/delete-song/${song.id}`,
+                        url: `/api/playlist/delete-song/${song.id}`,
                         type: 'POST',
                         success: function (response){
                             updatePlaylist()
@@ -113,7 +113,7 @@ export function updatePlaylist(){
                             favIcon.classList.add("fa-regular")
                         },
                         error: function (error){
-                            console.log('Error:', error);
+                            console.log('Error:', error)
                         }
                     })
                 })
@@ -122,9 +122,9 @@ export function updatePlaylist(){
 
         },
         error: function(error) {
-        console.log('Error:', error);
+        console.log('Error:', error)
     }
-    });
+    })
 
 }
 updatePlaylist()

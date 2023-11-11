@@ -29,9 +29,6 @@ public class SongService {
     public List<Song> allSongs(){
         return songRepository.findAll();
     }
-    public List<Song> getSongsByAlbumId(Long id){
-        return songRepository.getSongsByAlbumId(id);
-    }
     public Song getSongById(Long id){
         return songRepository.findById(id).orElse(null);
     }
@@ -50,5 +47,9 @@ public class SongService {
 
 
         songRepository.deleteById(id);
+    }
+
+    public Song getRandomSong(){
+        return songRepository.findRandomSong();
     }
 }

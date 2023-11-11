@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/artist-order")
 @RequiredArgsConstructor
-public class AdminAPIController {
+public class ArtistOrderAPIController {
     private final UserService userService;
     private final ObjectToDTO objectToDTO = new ObjectToDTO();
     private final ArtistOrderService artistOrderService;
 
-    @GetMapping("/get-artist-orders")
+    @GetMapping("/get-all")
     public ResponseEntity<List<UserDTO>> getArtistOrders(){
         List<ArtistOrder> orderList = artistOrderService.getAll();
         List<User> userList = new ArrayList<>();
@@ -33,7 +33,7 @@ public class AdminAPIController {
         return ResponseEntity.ok(objectToDTO.toUserDTOList(userList));
     }
 
-    @GetMapping("/delete-order/{id}")
+    @GetMapping("/delete/{id}")
     public ResponseEntity<String> deleteArtistOrder(@PathVariable Long id){
         artistOrderService.deleteOrder(userService.getUserById(id));
         return ResponseEntity.ok("Order was deleted");

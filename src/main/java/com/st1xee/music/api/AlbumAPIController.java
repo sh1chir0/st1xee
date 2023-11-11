@@ -24,25 +24,13 @@ import java.util.List;
  * @author sh1chiro 09.08.2023
  */
 @RestController
-@RequestMapping("/api/albums")
+@RequestMapping("/api/album")
 @RequiredArgsConstructor
 public class AlbumAPIController {
-    private final SongService songService;
     private final AlbumService albumService;
     private final PlaylistService playlistService;
     private final ObjectToDTO objectToDTO = new ObjectToDTO();
-    @GetMapping("/songs")
-    @ResponseBody
-    public ResponseEntity<List<SongDTO>> getAllSongs(){
-        List<Song> songs = songService.allSongs();
-        return ResponseEntity.ok(objectToDTO.songToSongDTO(songs));
-    }
-//    @GetMapping("/shazam")
-//    @ResponseBody
-//    public ResponseEntity<List<SongDTO>> getTopShazam(){
-//        List<Song> songs = songService.getSongsByAlbumId(1L);
-//        return ResponseEntity.ok(songToSongDTO(songs));
-//    }
+
     @GetMapping ("/shazam")
     @ResponseBody
     public ResponseEntity<AlbumDTO> getTopShazam(){
@@ -50,12 +38,7 @@ public class AlbumAPIController {
         return ResponseEntity.ok(objectToDTO.albumToAlbumDTO(album));
     }
 
-    @GetMapping("/playlist")
-    @ResponseBody
-    public ResponseEntity<List<SongDTO>> getPlaylist(@AuthenticationPrincipal User user){
-        List<Song> playlist = playlistService.findPlaylistById(user.getId()).getSongs();
-        return ResponseEntity.ok(objectToDTO.songToSongDTO(playlist));
-    }
+
 
     @GetMapping("/get/{id}")
     public ResponseEntity<AlbumDTO> getAlbum(@PathVariable Long id){

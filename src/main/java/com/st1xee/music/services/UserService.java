@@ -4,20 +4,14 @@ import com.st1xee.music.enums.Roles;
 import com.st1xee.music.models.Playlist;
 import com.st1xee.music.models.User;
 import com.st1xee.music.repositories.UserRepository;
-import com.sun.security.auth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.parser.Authorization;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author sh1chiro 31.07.2023
@@ -31,9 +25,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
 
-    public List<User> allUsers(){
-        return userRepository.findAll();
-    }
     public void ban(Long id){
         User user = getUserById(id);
         user.setActive(!user.isActive());
@@ -68,15 +59,6 @@ public class UserService {
 
         return true;
     }
-    public User getUserByPrincipal(Principal principal){
-        if(principal == null){
-            return new User();
-        }
-        else{
-            return userRepository.findByEmail(principal.getName());
-
-        }
-    }
     public User getUserById(Long id){
         return userRepository.findById(id).orElse(null);
     }
@@ -104,23 +86,10 @@ public class UserService {
         return userRepository.findUsers(user);
     }
 
-    public boolean saveUser(User user){
+    public void saveUser(User user){
         if(user != null){
             userRepository.save(user);
-            return true;
         }
-        else
-            return false;
-    }
-    public void updateUser(User updatedUser, Principal principal){
-        User user = getUserByPrincipal(principal);
-        if(getUserByEmail(updatedUser.getEmail()) == null || getUserByEmail(updatedUser.getEmail()) == user)
-            user.setEmail(updatedUser.getEmail());
-        if(getUserByPhoneNumber(updatedUser.getPhoneNumber()) == null || getUserByPhoneNumber(updatedUser.getPhoneNumber()) == user)
-            user.setPhoneNumber(updatedUser.getPhoneNumber());
-        if(getUserByNickname(updatedUser.getNickname()) == null || getUserByNickname(updatedUser.getNickname()) == user)
-            user.setNickname(updatedUser.getNickname());
-        saveUser(user);
     }
     public boolean updateNickname(Long id, String nickname) {
         if (getUserByNickname(nickname) == null){
@@ -150,13 +119,6 @@ public class UserService {
         return false;
     }
 
-    public void updateAvatar(MultipartFile avatar, Principal principal) throws IOException{
-        User user = getUserByPrincipal(principal);
-        if(avatar != null){
-            user.setImage(imageService.add(avatar));
-        }
-        saveUser(user);
-    }
     public void updateAvatar(MultipartFile avatar, User user) throws IOException{
         if(avatar != null){
             user.setImage(imageService.add(avatar));

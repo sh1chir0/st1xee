@@ -36,14 +36,14 @@ export function artistPanel(){
                 <button id="new-album">Create new album</button>
             </div>
             `
-            artistPanel.innerHTML = menuContent;
-            workStation.appendChild(artistPanel);
-            const myAlbums = document.querySelector('.my-albums');
+            artistPanel.innerHTML = menuContent
+            workStation.appendChild(artistPanel)
+            const myAlbums = document.querySelector('.my-albums')
             for (let i = 0; i < data.length; i++) {
                 const album = data[i]
 
-                const albumBlock = document.createElement('div');
-                albumBlock.className = 'my-album-block';
+                const albumBlock = document.createElement('div')
+                albumBlock.className = 'my-album-block'
 
                 const albumButtonId = `my-albums-button-${i}`
                 albumBlock.innerHTML = `
@@ -57,10 +57,10 @@ export function artistPanel(){
                     <p>${album.totalSongs}</p>
                 </div>
                 `
-                myAlbums.appendChild(albumBlock);
+                myAlbums.appendChild(albumBlock)
 
                 if(i+1 < data.length){
-                    const hrBlock = document.createElement('div');
+                    const hrBlock = document.createElement('div')
                     hrBlock.innerHTML = `
                         <div class="my-album-block-hr">
                             <hr>
@@ -71,9 +71,9 @@ export function artistPanel(){
                 // albums
                 const albumButton = document.getElementById(albumButtonId)
                 albumButton.addEventListener('click', () =>{
-                    workStation.innerHTML = '';
-                    const myAlbumPage = document.createElement('div');
-                    myAlbumPage.className = 'page-my-album';
+                    workStation.innerHTML = ''
+                    const myAlbumPage = document.createElement('div')
+                    myAlbumPage.className = 'page-my-album'
 
                     myAlbumPage.innerHTML = `
                         <div class="page-my-album">
@@ -90,7 +90,7 @@ export function artistPanel(){
                         
                             <div class="page-my-album-settings-preview">
                               <div class="current-avatar">
-                                <img src="/images/${album.previewId}">
+                                <img src="/image/${album.previewId}">
                               </div>
                               <div class="load-avatar">
                                   <input class="form-control" type="file" accept="image/*" id="album-avatar" name="avatar" required>
@@ -127,7 +127,7 @@ export function artistPanel(){
 
                     const updateAlbumTitleButton = document.getElementById('update-album-title-button')
                     updateAlbumTitleButton.addEventListener('click', () => {
-                        const albumTitle = document.getElementById('page-my-album-title').value;
+                        const albumTitle = document.getElementById('page-my-album-title').value
                         fetch(`/api/artist/update/album/${album.id}`, {
                             method: 'POST',
                             headers: {
@@ -138,23 +138,19 @@ export function artistPanel(){
                             .then(response => {
                                 if (response.ok) {
                                     openArtistPanel()
-                                } else {
-                                    console.error('Помилка при завантаженні файлу:', response.status);
                                 }
                             })
-                            .catch(error => {
-                                console.error('Помилка при відправці запиту:', error);
-                            });
+
                     })
 
                     const updateAlbumPreviewButton = document.getElementById('update-album-preview-button')
                     updateAlbumPreviewButton.addEventListener('click', () => {
-                        const newAlbumPreview = document.getElementById('album-avatar');
-                        const albumPreview = newAlbumPreview.files[0];
+                        const newAlbumPreview = document.getElementById('album-avatar')
+                        const albumPreview = newAlbumPreview.files[0]
 
                         if (albumPreview) {
-                            const formData = new FormData();
-                            formData.append('avatar', albumPreview);
+                            const formData = new FormData()
+                            formData.append('avatar', albumPreview)
 
                             fetch(`/api/artist/update/album/${album.id}/preview`, {
                                 method: 'POST',
@@ -163,13 +159,8 @@ export function artistPanel(){
                                 .then(response => {
                                     if (response.ok) {
                                         openArtistPanel()
-                                    } else {
-                                        console.error('Помилка при завантаженні файлу:', response.status);
                                     }
                                 })
-                                .catch(error => {
-                                    console.error('Помилка при відправці запиту:', error);
-                                });
                         }
                     })
 
@@ -214,7 +205,7 @@ export function artistPanel(){
 
                         const changeSongTitleButton = document.getElementById(changeTitleButtonId)
                         changeSongTitleButton.addEventListener('click', () => {
-                            const songTitle = prompt("Введіть нову назву:");
+                            const songTitle = prompt("Введіть нову назву:")
                             if (songTitle !== null) {
                                 fetch(`/api/artist/update/song/${song.id}`, {
                                     method: 'POST',
@@ -226,19 +217,14 @@ export function artistPanel(){
                                     .then(response => {
                                         if (response.ok) {
                                             openArtistPanel()
-                                        } else {
-                                            console.error('Помилка при завантаженні файлу:', response.status);
                                         }
                                     })
-                                    .catch(error => {
-                                        console.error('Помилка при відправці запиту:', error);
-                                    });
                             }
                         })
 
                         const deleteSongButton = document.getElementById(deleteSongButtonId)
                         deleteSongButton.addEventListener('click', () => {
-                            const confirmation = confirm(`Are you sure you want to delete ${song.title}?`);
+                            const confirmation = confirm(`Are you sure you want to delete ${song.title}?`)
 
                             if (confirmation) {
                                 fetch(`/api/artist/delete/song/${song.id}`, {
@@ -247,13 +233,8 @@ export function artistPanel(){
                                     .then(response => {
                                         if (response.ok) {
                                             openArtistPanel()
-                                        } else {
-                                            console.error('Помилка при завантаженні файлу:', response.status);
                                         }
                                     })
-                                    .catch(error => {
-                                        console.error('Помилка при відправці запиту:', error);
-                                    });
                             }
                         })
 
@@ -261,9 +242,9 @@ export function artistPanel(){
 
                     const addSongButton = document.getElementById('add-song-button')
                     addSongButton.addEventListener('click', () => {
-                        workStation.innerHTML = '';
-                        const addSongPage = document.createElement('div');
-                        addSongPage.className = 'create-album';
+                        workStation.innerHTML = ''
+                        const addSongPage = document.createElement('div')
+                        addSongPage.className = 'create-album'
 
                         addSongPage.innerHTML = `
                         <div class="page-my-album-title">
@@ -300,20 +281,20 @@ export function artistPanel(){
                             albumSelect.appendChild(option)
                         })
 
-                        const loadSongButton = document.getElementById('load-song-button');
+                        const loadSongButton = document.getElementById('load-song-button')
                         loadSongButton.addEventListener('click', () => {
-                            const titleForSong = document.getElementById('title-for-new-song').value;
-                            const albumForSong = document.getElementById('page-my-album-select').value;
-                            const inputPreviewForNewSong = document.getElementById('preview-for-new-song');
-                            const previewForNewSong = inputPreviewForNewSong.files[0];
-                            const inputNewSong = document.getElementById('new-song');
-                            const newSong = inputNewSong.files[0];
+                            const titleForSong = document.getElementById('title-for-new-song').value
+                            const albumForSong = document.getElementById('page-my-album-select').value
+                            const inputPreviewForNewSong = document.getElementById('preview-for-new-song')
+                            const previewForNewSong = inputPreviewForNewSong.files[0]
+                            const inputNewSong = document.getElementById('new-song')
+                            const newSong = inputNewSong.files[0]
 
-                            const formData = new FormData();
-                            formData.append('songTitle', titleForSong);
-                            formData.append('albumId', albumForSong);
-                            formData.append('preview', previewForNewSong);
-                            formData.append('song', newSong);
+                            const formData = new FormData()
+                            formData.append('songTitle', titleForSong)
+                            formData.append('albumId', albumForSong)
+                            formData.append('preview', previewForNewSong)
+                            formData.append('song', newSong)
 
                             fetch('/api/artist/load/song', {
                                 method: 'POST',
@@ -325,18 +306,18 @@ export function artistPanel(){
                                     }
                                 })
                                 .catch(error => {
-                                    console.error('An error occurred:', error);
-                                });
-                        });
+                                    console.error('An error occurred:', error)
+                                })
+                        })
 
 
 
                     })
                     const deleteAlbumButton = document.getElementById(`delete-album-button`)
                     deleteAlbumButton.addEventListener('click', () => {
-                        const confirmation = confirm(`Are you sure you want to delete ${album.title}?`);
+                        const confirmation = confirm(`Are you sure you want to delete ${album.title}?`)
                         if(confirmation){
-                            fetch(`/api/albums/delete/${album.id}`, {
+                            fetch(`/api/album/delete/${album.id}`, {
                                 method: 'POST'
                             })
                                 .then(response => {
@@ -345,7 +326,7 @@ export function artistPanel(){
                                     }
                                 })
                                 .catch(error => {
-                                    console.error('An error occurred:', error);
+                                    console.error('An error occurred:', error)
                                 })
                         }
                     })
@@ -361,9 +342,9 @@ export function artistPanel(){
             newAlbumButton.addEventListener('click', () => {
                 console.log('new album button')
 
-                workStation.innerHTML = '';
-                const newAlbum = document.createElement('div');
-                newAlbum.className = 'create-album';
+                workStation.innerHTML = ''
+                const newAlbum = document.createElement('div')
+                newAlbum.className = 'create-album'
 
                 newAlbum.innerHTML = `
                     <div class="page-my-album-title">
@@ -383,12 +364,12 @@ export function artistPanel(){
 
                 const createNewAlbumButton = document.getElementById('create-new-album-button')
                 createNewAlbumButton.addEventListener('click', () => {
-                    const titleForNewAlbum = document.getElementById('title-for-new-album').value;
-                    const inputPreviewForNewAlbum = document.getElementById('preview-for-new-album');
-                    const previewForNewAlbum = inputPreviewForNewAlbum.files[0];
-                    const formData = new FormData();
-                    formData.append('albumTitle', titleForNewAlbum);
-                    formData.append('albumPreview', previewForNewAlbum);
+                    const titleForNewAlbum = document.getElementById('title-for-new-album').value
+                    const inputPreviewForNewAlbum = document.getElementById('preview-for-new-album')
+                    const previewForNewAlbum = inputPreviewForNewAlbum.files[0]
+                    const formData = new FormData()
+                    formData.append('albumTitle', titleForNewAlbum)
+                    formData.append('albumPreview', previewForNewAlbum)
                     fetch('/api/artist/create/album', {
                         method: 'POST',
                         body: formData,
@@ -398,15 +379,9 @@ export function artistPanel(){
                                 openArtistPanel()
                             }
                         })
-                        .catch(error => {
-                            console.error('An error occurred:', error);
-                        });
                 })
 
             })
 
         })
-        .catch(error => {
-            console.error('Error fetching user profile data:', error);
-        });
 }

@@ -1,4 +1,4 @@
-package com.st1xee.music.controllers;
+package com.st1xee.music.api;
 
 import com.st1xee.music.models.Image;
 import com.st1xee.music.repositories.ImageRepository;
@@ -11,16 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
-
-/**
- * @author sh1chiro 09.08.2023
- */
 @RestController
 @RequiredArgsConstructor
-public class ImageController {
+public class ImageAPIController {
     private final ImageRepository imageRepository;
 
-    @GetMapping("/images/{id}")
+    @GetMapping("/image/{id}")
     private ResponseEntity<?> getImageById(@PathVariable Long id){
         Image image = imageRepository.findById(id).orElse(null);
         return ResponseEntity.ok()
@@ -30,3 +26,4 @@ public class ImageController {
                 .body(new InputStreamResource(new ByteArrayInputStream(image.getBytes())));
     }
 }
+

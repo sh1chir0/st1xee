@@ -1,4 +1,3 @@
-import {openAdminPanel} from './userSettings.js'
 import {deleteAvatar} from './userSettings.js'
 import {changeUserNickname} from './userSettings.js'
 import {changeUserEmail} from './userSettings.js'
@@ -60,7 +59,7 @@ export function adminPanel(){
 
     const artistsOrders = document.getElementById('ap-artists-orders')
     artistsOrders.addEventListener('click', () => {
-        fetch('/api/admin/get-artist-orders', {
+        fetch('/api/artist-order/get-all', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -170,7 +169,7 @@ function artistsOrdersPage(list){
 
         document.getElementById(approveButtonId).addEventListener('click', () => {
             changeUserRole(user.id, 'artist', adminPanel)
-            fetch(`/api/admin/delete-order/${user.id}`, {
+            fetch(`/api/get-artist-order/delete/${user.id}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json',
@@ -184,7 +183,7 @@ function artistsOrdersPage(list){
         })
 
         document.getElementById(refuseButtonId).addEventListener('click', () => {
-            fetch(`/api/admin/delete-order/${user.id}`, {
+            fetch(`/api/get-artist-order/delete/${user.id}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json',
@@ -196,7 +195,6 @@ function artistsOrdersPage(list){
                     }
                 })
         })
-
     }
 
 }
@@ -270,11 +268,11 @@ function createPageWithUsers(title,list){
         `
         usersBlock.appendChild(userBlock)
 
-        const banBtn = document.getElementById(banButtonId);
+        const banBtn = document.getElementById(banButtonId)
         if (user.active) {
-            banBtn.textContent = "Ban";
+            banBtn.textContent = "Ban"
         } else {
-            banBtn.textContent = "Unban";
+            banBtn.textContent = "Unban"
         }
 
         if(i+1 < list.length){
@@ -286,28 +284,28 @@ function createPageWithUsers(title,list){
 
         const changeNicknameButton = document.getElementById(changeNicknameButtonId)
         changeNicknameButton.addEventListener('click', (event) => {
-            const nickname = prompt(`Please enter a new nickname for ${user.nickname}`, "");
+            const nickname = prompt(`Please enter a new nickname for ${user.nickname}`, "")
 
             changeUserNickname(user.id, nickname, adminPanel)
         })
 
         const changePhoneNumberButton = document.getElementById(changePhoneNumberButtonId)
         changePhoneNumberButton.addEventListener('click', () => {
-            const phone = prompt(`Please enter a new phoneNumber for ${user.nickname}`, "");
+            const phone = prompt(`Please enter a new phoneNumber for ${user.nickname}`, "")
 
             changeUserPhone(user.id, phone, adminPanel)
         })
 
         const changeEmailButton = document.getElementById(changeEmailButtonId)
         changeEmailButton.addEventListener('click', () => {
-            const email = prompt(`Please enter a new email for ${user.nickname}`, "");
+            const email = prompt(`Please enter a new email for ${user.nickname}`, "")
 
             changeUserEmail(user.id, email, adminPanel)
         })
 
         const deleteAvatarButton = document.getElementById(deleteAvatarButtonId)
         deleteAvatarButton.addEventListener('click', () => {
-            const confirmation = window.confirm(`Are you sure you want to delete avatar for ${user.nickname}?`);
+            const confirmation = window.confirm(`Are you sure you want to delete avatar for ${user.nickname}?`)
             if(confirmation){
                 deleteAvatar(user.id, adminPanel)
             }
@@ -315,14 +313,14 @@ function createPageWithUsers(title,list){
 
         const changePasswordButton = document.getElementById(changePasswordButtonId)
         changePasswordButton.addEventListener('click', () => {
-            const password = prompt(`Please enter a new password for ${user.nickname}`, "");
+            const password = prompt(`Please enter a new password for ${user.nickname}`, "")
 
             changeUserPassword(user.id, 'admin', password, adminPanel)
         })
 
         const changeRoleButton = document.getElementById(changeRoleButtonId)
         changeRoleButton.addEventListener('click', () => {
-            const role = prompt(`Please enter a new role for ${user.nickname}`, "");
+            const role = prompt(`Please enter a new role for ${user.nickname}`, "")
 
             changeUserRole(user.id, role, adminPanel)
         })

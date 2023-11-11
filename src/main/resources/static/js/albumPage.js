@@ -1,13 +1,13 @@
-import {loadPlayer} from './main.js';
-import {updatePlaylist} from './playlist.js';
-import {artistButtonsFromAlbum} from './artistPage.js';
+import {loadPlayer} from './main.js'
+import {updatePlaylist} from './playlist.js'
+import {artistButtonsFromAlbum} from './artistPage.js'
 
 const workStation = document.querySelector('.work-station')
 export function enableAlbumButton(id){
     const albumButton = document.getElementById(id)
     albumButton.addEventListener('click', () => {
         workStation.innerHTML = ``
-        fetch(`/api/albums/get/${id}`, {
+        fetch(`/api/album/get/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -23,13 +23,13 @@ export function enableAlbumButton(id){
 }
 
 export function loadAlbum(album){
-    const albumContainer = document.createElement('div');
-    albumContainer.className = 'album-container';
+    const albumContainer = document.createElement('div')
+    albumContainer.className = 'album-container'
     albumContainer.innerHTML = `
                 <div class="album" id="album">
                     <div class="album-header">
                         <div class="album-preview">
-                            <img src="/images/${album.previewId}">
+                            <img src="/image/${album.previewId}">
                         </div>
                         <div class="album-info">
                             <div class="artist-name">
@@ -58,10 +58,10 @@ export function loadAlbum(album){
                     </div>
                     <hr>
                 </div>
-            `;
-    workStation.appendChild(albumContainer);
-    const albumElement = document.getElementById('album');
-    albumElement.style.backgroundImage = `url('/images/${album.previewId}')`;
+            `
+    workStation.appendChild(albumContainer)
+    const albumElement = document.getElementById('album')
+    albumElement.style.backgroundImage = `url('/image/${album.previewId}')`
 
     loadAlbumSongs(album, 'album-songs')
 
@@ -70,13 +70,13 @@ export function loadAlbum(album){
 export function loadAlbumSongs(album, path) {
     const albumSongsBlock = document.getElementById(path)
     for (let k = 0; k < album.songsDTO.length; k++) {
-        const song = album.songsDTO[k];
+        const song = album.songsDTO[k]
 
-        const songBlock = document.createElement('div');
+        const songBlock = document.createElement('div')
         songBlock.className = 'song-block'
         songBlock.id = `${path}-song-block`
 
-        const playBtnId = `${path}-play-btn-${k}`;
+        const playBtnId = `${path}-play-btn-${k}`
         const heartIconId = `${path}-heart-icon-${k}`
         const artistButtonId = `${path}-artist-button-${k + 1}`
         songBlock.innerHTML = `
@@ -98,30 +98,30 @@ export function loadAlbumSongs(album, path) {
                         <div class="time">
                             <p>${song.duration}</p>
                         </div>
-                    `;
+                    `
         console.log(songBlock)
-        albumSongsBlock.appendChild(songBlock);
+        albumSongsBlock.appendChild(songBlock)
 
         const heartIcon = document.getElementById(heartIconId)
 
         const playlist = JSON.parse(localStorage.getItem('playlist'))
         let isContained = playlist.some(function (item) {
-            return item.id === song.id;
-        });
+            return item.id === song.id
+        })
         if (isContained) {
-            heartIcon.classList.remove("fa-regular");
-            heartIcon.classList.add("fa-solid");
+            heartIcon.classList.remove("fa-regular")
+            heartIcon.classList.add("fa-solid")
         } else {
-            heartIcon.classList.remove("fa-solid");
-            heartIcon.classList.add("fa-regular");
+            heartIcon.classList.remove("fa-solid")
+            heartIcon.classList.add("fa-regular")
         }
 
         heartIcon.addEventListener('click', () => {
-            const isRegular = heartIcon.classList.contains("fa-regular");
+            const isRegular = heartIcon.classList.contains("fa-regular")
 
             if (isRegular) {
                 $.ajax({
-                    url: `/api/songs/add-song/${song.id}`,
+                    url: `/api/playlist/add-song/${song.id}`,
                     type: 'POST',
                     success: function (response) {
                         updatePlaylist()
@@ -129,12 +129,12 @@ export function loadAlbumSongs(album, path) {
                         heartIcon.classList.add("fa-solid")
                     },
                     error: function (error) {
-                        console.log('Error:', error);
+                        console.log('Error:', error)
                     }
                 })
             } else {
                 $.ajax({
-                    url: `/api/songs/delete-song/${song.id}`,
+                    url: `/api/playlist/delete-song/${song.id}`,
                     type: 'POST',
                     success: function (response) {
                         updatePlaylist()
@@ -142,11 +142,11 @@ export function loadAlbumSongs(album, path) {
                         heartIcon.classList.add("fa-regular")
                     },
                     error: function (error) {
-                        console.log('Error:', error);
+                        console.log('Error:', error)
                     }
                 })
             }
-        });
+        })
 
 
         const playBtn = document.getElementById(playBtnId)
@@ -154,14 +154,14 @@ export function loadAlbumSongs(album, path) {
             localStorage.setItem('albumForPlaying', JSON.stringify(album.songsDTO))
             localStorage.setItem('songId', JSON.stringify(k))
 
-            workStation.innerHTML = '';
+            workStation.innerHTML = ''
             const playerContainer = document.createElement('div')
-            playerContainer.className = 'player';
-            playerContainer.id = 'player';
+            playerContainer.className = 'player'
+            playerContainer.id = 'player'
             playerContainer.innerHTML = `
                         <div class="player-container">
                           <div class="song-preview">
-                              <img class="song-preview-img" src="/images/${song.id}">
+                              <img class="song-preview-img" src="/image/${song.id}">
                           </div>
                           <div class="player-song-name">
                               <div class="name">
@@ -193,9 +193,9 @@ export function loadAlbumSongs(album, path) {
                           </div>
                       </div>
             
-                      `;
+                      `
 
-            workStation.appendChild(playerContainer);
+            workStation.appendChild(playerContainer)
             loadPlayer()
 
         })
