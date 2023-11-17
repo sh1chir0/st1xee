@@ -14,6 +14,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AlbumAPIController {
     private final AlbumService albumService;
-    private final PlaylistService playlistService;
     private final ObjectToDTO objectToDTO = new ObjectToDTO();
 
     @GetMapping ("/shazam")
@@ -44,7 +44,7 @@ public class AlbumAPIController {
     public ResponseEntity<AlbumDTO> getAlbum(@PathVariable Long id){
         return ResponseEntity.ok(objectToDTO.albumToAlbumDTO(albumService.getAlbumById(id)));
     }
-
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'ARTIST')")
     @PostMapping("/delete/{id}")
     public ResponseEntity<String> deleteAlbum(@PathVariable Long id){
         if(albumService.deleteAlbum(id))

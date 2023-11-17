@@ -7,6 +7,7 @@ import com.st1xee.music.services.ArtistOrderService;
 import com.st1xee.music.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class ArtistOrderAPIController {
     private final ObjectToDTO objectToDTO = new ObjectToDTO();
     private final ArtistOrderService artistOrderService;
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
     @GetMapping("/get-all")
     public ResponseEntity<List<UserDTO>> getArtistOrders(){
         List<ArtistOrder> orderList = artistOrderService.getAll();
@@ -33,6 +35,7 @@ public class ArtistOrderAPIController {
         return ResponseEntity.ok(objectToDTO.toUserDTOList(userList));
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
     @GetMapping("/delete/{id}")
     public ResponseEntity<String> deleteArtistOrder(@PathVariable Long id){
         artistOrderService.deleteOrder(userService.getUserById(id));

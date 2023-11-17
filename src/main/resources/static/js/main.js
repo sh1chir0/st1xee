@@ -7,6 +7,21 @@ const menuButton = document.querySelector('#menu-button'),
 let shazamButton = document.querySelector('#shazam-button'),
     randomSongButton = document.getElementById('random-song')
 
+
+function innerUser(){
+    const myAvatar = document.getElementById('my-avatar'),
+        myNickname = document.getElementById('my-nickname')
+    fetch('/api/user/get', {
+        method: 'GET'
+    })
+        .then(response => response.json())
+        .then(data => {
+            myNickname.innerText = data.nickname
+            myAvatar.src = `/image/${data.avatarId}`
+        })
+}
+innerUser()
+
 function updateShazamButtonListener() {
     shazamButton.addEventListener('click', () => {
         workStation.innerHTML = ''

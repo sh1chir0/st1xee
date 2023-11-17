@@ -19,6 +19,11 @@ export function artistButtonsFromAlbum(pathAlbumBlock){
     openArtistPage(elementId, songCount)
 }
 
+export function artistButtonFromPlayer(){
+    openArtistPage('artist-from-pl-', 2)
+
+}
+
 
 function openArtistPage(elementId, elementCount) {
     for (let i = 1; i <= elementCount; i++) {
@@ -47,7 +52,7 @@ function openArtistPage(elementId, elementCount) {
                             </div>
                             <div class="album-info">
                               <div class="info">
-                                <p>16 albums • 165 songs</p>
+                                <p>${data.albums.length} albums</p>
                               </div>
                               <div class="album-name">
                                 <p>${data.nickname}</p>
@@ -88,7 +93,7 @@ function openArtistPage(elementId, elementCount) {
                                   <h1>${album.title}</h1>
                                 </div>
                                 <div class="artist-page-album-info-songs">
-                                  <p>36 songs, 156 min 15 sec</p>
+                                  <p>${album.totalSongs} songs, ${album.totalDuration}</p>
                                 </div>
                               </div>
                             </div>

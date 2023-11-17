@@ -59,6 +59,7 @@ class ArtistAPIController {
         return ResponseEntity.badRequest().body("Title is empty");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'ARTIST')")
     @PostMapping("/update/album/{id}/preview")
     public ResponseEntity<String> handleTitleUpload(@RequestParam("avatar") MultipartFile previewFile, @PathVariable Long id) throws IOException {
         if (previewFile != null) {
@@ -69,6 +70,7 @@ class ArtistAPIController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'ARTIST')")
     @PostMapping("/update/song/{id}")
     public ResponseEntity<String> handleSongTitleUpdate(@RequestParam("songTitle") String songTitle, @PathVariable Long id) {
         if (!songTitle.isEmpty()) {
@@ -78,12 +80,39 @@ class ArtistAPIController {
         return ResponseEntity.badRequest().body("Title is empty");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'ARTIST')")
     @PostMapping("/delete/song/{id}")
     public ResponseEntity<String> handleDeleteSongUpdate(@PathVariable Long id) {
+        Song song = songService.getSongById(id);
+        Album album = song.getAlbum();
+        album.setTotalSongs(album.getTotalSongs() - 1);
+
+        String songDuration = song.getDuration();
+        String[] songParts = songDuration.split(":");
+        int songMinutes = Integer.parseInt(songParts[0]);
+        int songSeconds = Integer.parseInt(songParts[1]);
+
+        String[] totalParts = album.getTotalDuration().split(":");
+        int totalMinutes = Integer.parseInt(totalParts[0]);
+        int totalSeconds = Integer.parseInt(totalParts[1]);
+
+        totalMinutes -= songMinutes;
+        totalSeconds -= songSeconds;
+
+        if (totalSeconds < 0) {
+            totalMinutes -= 1;
+            totalSeconds += 60;
+        }
+
+        album.setTotalDuration(String.format("%02d:%02d", totalMinutes, totalSeconds));
+
+        albumService.updateAlbum(album);
+
         songService.deleteSong(id);
         return ResponseEntity.ok("Title successfully updated");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'ARTIST')")
     @PostMapping("/load/song")
     public ResponseEntity<String> handleLoadSong(@RequestParam("songTitle") String songTitle,
                                                  @RequestParam("albumId") Long albumId,
@@ -128,6 +157,32 @@ class ArtistAPIController {
             }
 
             songService.saveSong(song);
+
+            // duration + amount song
+            Album album = albumService.getAlbumById(albumId);
+            album.setTotalSongs(album.getSongs().size());
+
+            String songDuration = song.getDuration();
+            String[] songParts = songDuration.split(":");
+            int songMinutes = Integer.parseInt(songParts[0]);
+            int songSeconds = Integer.parseInt(songParts[1]);
+
+            String[] totalParts = album.getTotalDuration().split(":");
+            int totalMinutes = Integer.parseInt(totalParts[0]);
+            int totalSeconds = Integer.parseInt(totalParts[1]);
+
+            totalMinutes += songMinutes;
+            totalSeconds += songSeconds;
+
+            if (totalSeconds >= 60) {
+                totalMinutes += totalSeconds / 60;
+                totalSeconds %= 60;
+            }
+
+            album.setTotalDuration(String.format("%02d:%02d", totalMinutes, totalSeconds));
+
+            albumService.updateAlbum(album);
+
             return ResponseEntity.ok("Song successfully uploaded");
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,6 +190,7 @@ class ArtistAPIController {
         return ResponseEntity.badRequest().body("Song dont uploaded");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'ARTIST')")
     @PostMapping("/create/album")
     public ResponseEntity<String> handleCreateAlbum(@RequestParam("albumTitle") String title,
                                                     @RequestParam("albumPreview") MultipartFile preview,

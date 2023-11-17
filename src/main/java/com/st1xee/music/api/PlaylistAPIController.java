@@ -6,6 +6,7 @@ import com.st1xee.music.models.Song;
 import com.st1xee.music.models.User;
 import com.st1xee.music.services.PlaylistService;
 import com.st1xee.music.services.SongService;
+import com.st1xee.music.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.Objects;
 public class PlaylistAPIController {
     private final PlaylistService playlistService;
     private final SongService songService;
+    private final UserService userService;
     private final ObjectToDTO objectToDTO = new ObjectToDTO();
     @GetMapping("/")
     @ResponseBody
@@ -46,5 +48,29 @@ public class PlaylistAPIController {
         Playlist playlist = playlistService.findPlaylistById(user.getId());
         playlist.getSongs().removeIf(song -> Objects.equals(song.getId(), songId));
         playlistService.save(playlist);
+    }
+
+    @GetMapping("/get/shazam")
+    public ResponseEntity<List<SongDTO>> getShazamPlaylist(){
+        User shazam = userService.getUserByNickname("shazam");
+        List<Song> songList = shazam.getPlaylists().get(0).getSongs();
+
+        return ResponseEntity.ok(objectToDTO.songListToSongDTOList(songList));
+    }
+
+    @GetMapping("/get/world")
+    public ResponseEntity<List<SongDTO>> getWorldPlaylist(){
+        User world = userService.getUserByNickname("shazam");
+        List<Song> songList = world.getPlaylists().get(0).getSongs();
+
+        return ResponseEntity.ok(objectToDTO.songListToSongDTOList(songList));
+    }
+
+    @GetMapping("/get/ukraine")
+    public ResponseEntity<List<SongDTO>> getUkrainePlaylist(){
+        User ukraine = userService.getUserByNickname("shazam");
+        List<Song> songList = ukraine.getPlaylists().get(0).getSongs();
+
+        return ResponseEntity.ok(objectToDTO.songListToSongDTOList(songList));
     }
 }

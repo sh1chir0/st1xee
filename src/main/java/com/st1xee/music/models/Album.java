@@ -29,7 +29,7 @@ public class Album {
     @Column(name = "totalSongs")
     private int totalSongs;
     @Column(name = "totalDuration")
-    private String totalDuration;
+    private String totalDuration = "00:00";
     @OneToOne
     private Image preview;
     @Column(name = "dateOfCreated")

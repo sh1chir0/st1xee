@@ -1,29 +1,33 @@
-import { enableAlbumButton } from './albumPage.js'
+import {loadAlbum} from './albumPage.js'
+import {artistButtonFromPlayer} from "./artistPage.js";
 
-let playerStructure = document.querySelector('.player-structure'),
-    prevBtn = document.querySelector('.prev'),
-    playBtn = document.querySelector('.play'),
-    nextBtn = document.querySelector('.next'),
-    audio = document.querySelector('.audio'),
-    progressContainer = document.querySelector('.progress-container'),
-    progress = document.querySelector('.progress'),
-    previewImg = document.querySelector('.song-preview-img'),
-    imgSrc = document.querySelector('.play-img'),
-    name = document.getElementById('name'),
-    shuffle = document.querySelector('.shuffle'),
-    repeat = document.querySelector('.repeat'),
-    heart = document.querySelector('.heart'),
-    currentTimeNum = document.querySelector('.current-time'),
-    songTime = document.querySelector('.song-time'),
-    albumName = document.querySelector('.album-name'),
+let playerStructure, prevBtn, playBtn, nextBtn, audio, progressContainer, progress, previewImg,
+    imgSrc, name, shuffle, repeat, heart, currentTimeNum, songTime, albumName, artistNickname,
+    workStation, player
+function init() {
+    playerStructure = document.querySelector('.player-structure')
+    prevBtn = document.querySelector('.prev')
+    playBtn = document.querySelector('.play')
+    nextBtn = document.querySelector('.next')
+    audio = document.querySelector('.audio')
+    progressContainer = document.querySelector('.progress-container')
+    progress = document.querySelector('.progress')
+    previewImg = document.querySelector('.song-preview-img')
+    imgSrc = document.querySelector('.play-img')
+    name = document.getElementById('name')
+    shuffle = document.querySelector('.shuffle')
+    repeat = document.querySelector('.repeat')
+    heart = document.querySelector('.heart')
+    currentTimeNum = document.querySelector('.current-time')
+    songTime = document.querySelector('.song-time')
+    albumName = document.querySelector('.album-name')
     artistNickname = document.querySelector('.artist-from-player')
-
-const player = document.getElementById('player')
-
+    workStation = document.querySelector('.work-station')
+    player = document.getElementById('player')
+}
+init()
 const albumForPlaying = JSON.parse(localStorage.getItem('albumForPlaying'))
 const songId = JSON.parse(localStorage.getItem('songId'))
-console.log(albumForPlaying)
-console.log(songId)
 const imageUrl = "/image/" + albumForPlaying[songId].preview
 player.style.backgroundImage = `url(${imageUrl})`
 
@@ -35,22 +39,118 @@ let isRepeat = false
 let songIndex = songId
 
 
-function loadSong(song) {
-    audio.src = '/api/song/' + song.id + '/play'
-    name.innerHTML = song.title
-    previewImg.src = `/image/${song.preview}`
-    player.style.backgroundImage = `url(/image/${song.preview})`
-    albumName.innerHTML = `${song.albumTitle}`
-    albumName.id = `${song.albumId}`
-    artistNickname.innerHTML = `<p>${song.artistNickname}</p>`
+function loadSong(song){
+    workStation.innerHTML = ``
+    const playerContainer = document.createElement('div')
+    playerContainer.className = 'player'
+    playerContainer.id = 'player'
+    playerContainer.innerHTML = `
+                        <div class="player-container">
+                          <div class="song-preview">
+                              <img class="song-preview-img" src="/image/${song.preview}">
+                          </div>
+                          <div class="player-song-name">
+                              <div class="name">
+                                  <p id="name">${song.title}</p>
+                              </div>
+                              <div class="album-name">${song.albumTitle}</div>
+                              <div class="artist-from-player">
+                                  <p id="artist-from-pl-1">${song.artistNickname}</p>
+                              </div>
+                          </div>
+                          <div class="player-structure">
+                              <div class="auxiliary-buttons">
+                                  <div class="btn shuffle"><img src="../img/shuffle.png"></div>
+                                  <div class="btn repeat"><img src="../img/repeat.png"></div>
+                                  <div class="btn heartt"><img src="../img/heart.png"></div>
+                              </div>
+                              <div class="progress-container">
+                                  <div class="progress"></div>
+                              </div>
+                              <div class="player-time">
+                                  <p class="current-time">00:00</p>
+                                  <p class="song-time">${song.duration}</p>
+                              </div>
+                              <div class="buttons">
+                                  <div class="btn prev"><img src="../img/prev.png"></div>
+                                  <div class="btn play"><img class="play-img" src="../img/play.png"></div>
+                                  <div class="btn next"><img src="../img/next.png"></div>
+                              </div>
+                          </div>
+                      </div>
 
-   enableAlbumButton(song.albumId)
+                      `
+
+    workStation.appendChild(playerContainer)
+
+    init()
+
+    audio.src = '/api/song/' + song.id + '/play'
+    player.style.backgroundImage = `url(/image/${song.preview})`
+
+
+    audio.addEventListener('canplaythrough', () => {
+        playSong()
+    })
+
+    playBtn.addEventListener('click', () => {
+        const isPlaying = playerStructure.classList.contains('play')
+        if(isPlaying){
+            pauseSong()
+        } else{
+            playSong()
+        }
+    })
+
+    nextBtn.addEventListener('click', () => {
+        nextSong()
+    })
+
+    prevBtn.addEventListener('click', () => {
+        prevSong()
+    })
+
+    audio.addEventListener("timeupdate", updateProgress)
+
+    audio.addEventListener('ended', () =>{
+        if(isRepeat){
+            repeatSong()
+        }else{
+            nextSong()
+        }
+    })
+
+    shuffle.addEventListener('click', () => {
+        shuffleMusic()
+    })
+
+    repeat.addEventListener('click', () => {
+        repeatMusic()
+    })
+
+    albumName.addEventListener('click', () => {
+        fetch(`/api/album/get/${song.albumId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                loadAlbum(data)
+            })
+    })
+
+    progressContainer.addEventListener('click', setProgress)
+
+    artistButtonFromPlayer()
+    // artistNickname.addEventListener('click', () => {
+    //
+    // })
 }
 
 loadSong(albumForPlaying[songIndex])
-audio.addEventListener('canplaythrough', () => {
-    playSong()
-})
+
 function playSong(){
     playerStructure.classList.add('play')
     imgSrc.style.opacity = 0
@@ -69,15 +169,6 @@ function pauseSong(){
         imgSrc.style.opacity = 1
     }, 150)
 }
-playBtn.addEventListener('click', () => {
-    const isPlaying = playerStructure.classList.contains('play')
-    if(isPlaying){
-        pauseSong()
-    } else{
-        playSong()
-    }
-})
-
 
 
 function nextSong(){
@@ -97,9 +188,7 @@ function nextSong(){
     }, 150)
     playSong()
 }
-nextBtn.addEventListener('click', () => {
-    nextSong()
-})
+
 
 function prevSong(){
     prevBtn.style.opacity = 0
@@ -120,9 +209,7 @@ function prevSong(){
 
     playSong()
 }
-prevBtn.addEventListener('click', () => {
-    prevSong()
-})
+
 
 function updateProgress(e){
     const {duration, currentTime} = e.srcElement
@@ -148,7 +235,6 @@ function formatTime(time) {
     return `${min}:${sec}`
 }
 
-audio.addEventListener("timeupdate", updateProgress)
 
 function setProgress(e){
     const width = this.clientWidth
@@ -156,14 +242,7 @@ function setProgress(e){
     const duration = audio.duration
     audio.currentTime = (clickX/width) * duration
 }
-progressContainer.addEventListener('click', setProgress)
-audio.addEventListener('ended', () =>{
-    if(isRepeat){
-        repeatSong()
-    }else{
-        nextSong()
-    }
-})
+
 
 
 
@@ -177,12 +256,14 @@ function shuffleMusic(){
         isShuffle = true
     }
 }
-shuffle.addEventListener('click', () => {
-    shuffleMusic()
-})
+
 
 function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min
+    let randomNum = Math.floor(Math.random() * (max - min + 1)) + min
+    if(randomNum === prevSongs.length){
+        getRandomNumber(min, max)
+    }
+    return randomNum
 }
 
 
@@ -196,9 +277,7 @@ function repeatMusic(){
         isRepeat = true
     }
 }
-repeat.addEventListener('click', () => {
-    repeatMusic()
-})
+
 function repeatSong(){
     loadSong(albumForPlaying[songIndex])
     playSong()

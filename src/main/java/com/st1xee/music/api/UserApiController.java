@@ -35,20 +35,22 @@ public class UserApiController {
 
     @GetMapping("/get")
     public ResponseEntity<UserDTO> getUser(@AuthenticationPrincipal User authentificationUser) {
-        User user = userService.getUserById(authentificationUser.getId());
-
-        return ResponseEntity.ok(objectToDTO.userToUserDTO(user));
+        return ResponseEntity.ok(objectToDTO.userToUserDTO(authentificationUser));
     }
+
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
     @GetMapping("/get/users")
     public ResponseEntity<List<UserDTO>> getUsers(){
         return ResponseEntity.ok(objectToDTO.toUserDTOList(userService.getUsers()));
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
     @GetMapping("/get/artists")
     public ResponseEntity<List<UserDTO>> getArtists(){
         return ResponseEntity.ok(objectToDTO.toUserDTOList(userService.getArtists()));
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
     @GetMapping("/get/admins")
     public ResponseEntity<List<UserDTO>> getAdmins(){
         return ResponseEntity.ok(objectToDTO.toUserDTOList(userService.getAdmins()));
@@ -56,7 +58,8 @@ public class UserApiController {
 
 
     @PostMapping("/update/avatar")
-    public ResponseEntity<String> handleAvatarUpload(@RequestParam("avatar") MultipartFile avatarFile, @AuthenticationPrincipal User user) throws IOException {
+    public ResponseEntity<String> handleAvatarUpload(@RequestParam("avatar") MultipartFile avatarFile,
+                                                     @AuthenticationPrincipal User user) throws IOException {
         if (avatarFile != null) {
             userService.updateAvatar(avatarFile, user);
             return ResponseEntity.ok("File uploaded successfully");
@@ -66,8 +69,11 @@ public class UserApiController {
     }
     @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR') or #id == authentication.principal.id")
     @PostMapping("/{id}/update/nickname")
-    public ResponseEntity<String> handleNicknameUpdate(@PathVariable Long id, @RequestParam("nickname") String nickname) {
-        if (!nickname.isEmpty()){
+    public ResponseEntity<String> handleNicknameUpdate(@PathVariable Long id, @RequestParam("nickname") String nickname,
+                                                       @AuthenticationPrincipal User admin) {
+        System.out.println("method");
+        if (admin.getId().equals(id) || acceptForAdmin(userService.getUserById(id), admin)){
+            System.out.println("if");
             boolean result = userService.updateNickname(id, nickname);
             if (result)
                 return ResponseEntity.ok("Nickname successfully updated");
@@ -77,9 +83,11 @@ public class UserApiController {
         return ResponseEntity.badRequest().body("Nickname is empty");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR') or #id == authentication.principal.id")
     @PostMapping("/{id}/update/email")
-    public ResponseEntity<String> handleEmailUpdate(@PathVariable Long id, @RequestParam("email") String email) {
-        if (!email.isEmpty()) {
+    public ResponseEntity<String> handleEmailUpdate(@PathVariable Long id, @RequestParam("email") String email,
+                                                    @AuthenticationPrincipal User admin) {
+        if (admin.getId().equals(id) || acceptForAdmin(userService.getUserById(id), admin)){
             boolean result = userService.updateEmail(id, email);
             if (result)
                 return ResponseEntity.ok("Email successfully updated");
@@ -89,9 +97,11 @@ public class UserApiController {
         return ResponseEntity.badRequest().body("Email is empty");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR') or #id == authentication.principal.id")
     @PostMapping("/{id}/update/phone")
-    public ResponseEntity<String> handlePhoneUpdate(@PathVariable Long id, @RequestParam("phone") String phone) {
-        if (!phone.isEmpty()) {
+    public ResponseEntity<String> handlePhoneUpdate(@PathVariable Long id, @RequestParam("phone") String phone,
+                                                    @AuthenticationPrincipal User admin) {
+        if (admin.getId().equals(id) || acceptForAdmin(userService.getUserById(id), admin)) {
             boolean result = userService.updatePhone(id, phone);
             if (result)
                 return ResponseEntity.ok("Phone successfully updated");
@@ -101,18 +111,22 @@ public class UserApiController {
         return ResponseEntity.badRequest().body("Phone is empty");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR') or #id == authentication.principal.id")
     @PostMapping("/{id}/update/password")
-    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> requestBody,
+                                                 @AuthenticationPrincipal User admin) {
         String oldPassword = requestBody.get("oldPassword");
         String newPassword = requestBody.get("newPassword");
         User user = userService.getUserById(id);
-        if (passwordEncoder.matches(oldPassword, user.getPassword()) || oldPassword.equals("admin")) {
+
+        if(passwordEncoder.matches(oldPassword, user.getPassword())
+                || (oldPassword.equals("admin") && acceptForAdmin(user, admin))){
+
             String encodedPassword = passwordEncoder.encode(newPassword);
             user.setPassword(encodedPassword);
             userService.saveUser(user);
-
             return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
-        } else {
+        }else{
             return new ResponseEntity<>("Incorrect old password", HttpStatus.BAD_REQUEST);
         }
     }
@@ -134,13 +148,16 @@ public class UserApiController {
         return ResponseEntity.ok("The account has been logged out");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
     @PostMapping("/{id}/avatar/delete")
-    public ResponseEntity<String> deleteAvatar(@PathVariable Long id){
-        userService.deleteAvatar(id);
+    public ResponseEntity<String> deleteAvatar(@PathVariable Long id, @AuthenticationPrincipal User admin){
+        if(acceptForAdmin(userService.getUserById(id), admin))
+            userService.deleteAvatar(id);
 
         return ResponseEntity.ok("Avatar was deleted");
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
     @PostMapping("/{id}/change-role")
     public ResponseEntity<String> changeRole(@PathVariable Long id,
                                              @RequestParam("role") String role,
@@ -167,6 +184,7 @@ public class UserApiController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN')")
     @PostMapping("/{id}/ban")
     public ResponseEntity<String> banUser(@PathVariable Long id,@AuthenticationPrincipal User admin){
         if(acceptForAdmin(userService.getUserById(id), admin)){

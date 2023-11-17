@@ -3,26 +3,9 @@ import {updatePlaylist} from './playlist.js'
 import {artistButtonsFromAlbum} from './artistPage.js'
 
 const workStation = document.querySelector('.work-station')
-export function enableAlbumButton(id){
-    const albumButton = document.getElementById(id)
-    albumButton.addEventListener('click', () => {
-        workStation.innerHTML = ``
-        fetch(`/api/album/get/${id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                loadAlbum(data)
-            })
-    })
-
-
-}
 
 export function loadAlbum(album){
+    workStation.innerHTML = ``
     const albumContainer = document.createElement('div')
     albumContainer.className = 'album-container'
     albumContainer.innerHTML = `
@@ -99,7 +82,6 @@ export function loadAlbumSongs(album, path) {
                             <p>${song.duration}</p>
                         </div>
                     `
-        console.log(songBlock)
         albumSongsBlock.appendChild(songBlock)
 
         const heartIcon = document.getElementById(heartIconId)

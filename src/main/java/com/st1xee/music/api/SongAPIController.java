@@ -30,7 +30,6 @@ import java.util.Random;
 @RestController
 @RequestMapping("/api/song")
 @RequiredArgsConstructor
-//@CrossOrigin
 public class SongAPIController {
     private final SongService songService;
     private final ObjectToDTO objectToDTO = new ObjectToDTO();

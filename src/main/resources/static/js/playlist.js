@@ -4,7 +4,6 @@ import { artistButtonsFromPlaylist } from './artistPage.js'
 const songsBlock = document.getElementById("songs"),
       workStation = document.querySelector('.work-station')
 
-
 export function updatePlaylist(){
 
     $.ajax({
@@ -69,7 +68,7 @@ export function updatePlaylist(){
                           </div>
                           <div class="album-name">${song.albumTitle}</div>
                           <div class="artist-from-player">
-                              <p>${song.artistNickname}</p>
+                              <p id="artist-from-pl-1">${song.artistNickname}</p>
                           </div>
                       </div>
                       <div class="player-structure">
