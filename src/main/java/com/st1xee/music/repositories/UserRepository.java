@@ -1,6 +1,7 @@
 package com.st1xee.music.repositories;
 
 import com.st1xee.music.enums.Roles;
+import com.st1xee.music.models.Song;
 import com.st1xee.music.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findArtists(@Param("artist") Roles artist);
     @Query("SELECT u FROM User u WHERE :user MEMBER OF u.roles")
     List<User> findUsers(@Param("user") Roles user);
+
+    @Query("SELECT u FROM User u WHERE LOWER(u.nickname) LIKE LOWER(concat('%', :searchTerm, '%')) AND :artist MEMBER OF u.roles")
+    List<User> findByTitleContainingIgnoreCase(@Param("searchTerm") String searchTerm, @Param("artist") Roles artist);
 }

@@ -1,6 +1,7 @@
 package com.st1xee.music.services;
 
 import com.st1xee.music.models.Album;
+import com.st1xee.music.models.Song;
 import com.st1xee.music.models.User;
 import com.st1xee.music.repositories.AlbumRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,4 +56,9 @@ public class AlbumService {
 
         return getAlbumById(id) == null;
     }
+
+    public List<Album> search(String searchTerm) {
+        return albumRepository.findByTitleContainingIgnoreCase(searchTerm);
+    }
+
 }

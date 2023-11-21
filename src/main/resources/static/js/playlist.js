@@ -5,6 +5,14 @@ const songsBlock = document.getElementById("songs"),
       workStation = document.querySelector('.work-station')
 
 export function updatePlaylist(){
+    fetch('/api/search/',{
+        method: 'GET'
+    })
+        .then(response => response.json())
+        .then(data => {
+
+        })
+
 
     $.ajax({
         url: '/api/playlist/',

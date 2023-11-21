@@ -52,4 +52,8 @@ public class SongService {
     public Song getRandomSong(){
         return songRepository.findRandomSong();
     }
+
+    public List<Song> search(String searchTerm) {
+        return songRepository.findByTitleContainingIgnoreCase(searchTerm);
+    }
 }

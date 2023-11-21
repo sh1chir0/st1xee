@@ -22,15 +22,15 @@ public class Album {
     private Long id;
     @Column(name = "title")
     private String title;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User artist;
-    @OneToMany(mappedBy = "album")
+    @OneToMany(mappedBy = "album", cascade = CascadeType.REMOVE)
     private List<Song> songs;
     @Column(name = "totalSongs")
     private int totalSongs;
     @Column(name = "totalDuration")
     private String totalDuration = "00:00";
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Image preview;
     @Column(name = "dateOfCreated")
     private LocalDateTime dateOfCreated;

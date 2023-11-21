@@ -21,7 +21,14 @@ export function artistButtonsFromAlbum(pathAlbumBlock){
 
 export function artistButtonFromPlayer(){
     openArtistPage('artist-from-pl-', 2)
+}
 
+export function artistButtonFromSearch(){
+    const buttonContainer = document.querySelector('.search-page-artists')
+    const buttonElements = buttonContainer.querySelectorAll('.search-page-artist-block')
+    const buttonCount = buttonElements.length
+
+    openArtistPage('search-artist-button-', buttonCount)
 }
 
 

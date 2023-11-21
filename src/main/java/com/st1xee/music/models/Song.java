@@ -27,13 +27,13 @@ public class Song {
     private Long size;
     @Column(name = "fileType")
     private String fileType;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Album album;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User artist;
     @Column(name = "bytes", columnDefinition = "MEDIUMBLOB")
     private byte[] bytes;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Image preview;
     @Column(name = "duration")
     private String duration;

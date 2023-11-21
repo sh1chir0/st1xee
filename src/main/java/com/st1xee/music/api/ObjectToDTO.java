@@ -27,13 +27,8 @@ public class ObjectToDTO {
         albumDTO.setPreviewId(album.getPreview().getId());
         return albumDTO;
     }
-    public List<SongDTO> songListToSongDTOList(List<Song> songs){
-        List<SongDTO> songDTOs = new ArrayList<>();
-        for(Song song: songs){
-            songDTOs.add(songToSongDTO(song));
-        }
-        return songDTOs;
-    }
+
+
     public SongDTO songToSongDTO(Song song){
         SongDTO songDTO = new SongDTO();
         songDTO.setId(song.getId());
@@ -88,6 +83,26 @@ public class ObjectToDTO {
 
         return artistDTO;
     }
-
+    public List<AlbumDTO> albumListToAlbumDTOList(List<Album> albums){
+        List<AlbumDTO> albumDTOs = new ArrayList<>();
+        for(Album album: albums){
+            albumDTOs.add(albumToAlbumDTO(album));
+        }
+        return albumDTOs;
+    }
+    public List<SongDTO> songListToSongDTOList(List<Song> songs){
+        List<SongDTO> songDTOs = new ArrayList<>();
+        for(Song song: songs){
+            songDTOs.add(songToSongDTO(song));
+        }
+        return songDTOs;
+    }
+    public List<ArtistDTO> artistListToArtistDTOList(List<User> artists){
+        List<ArtistDTO> artistDTOs = new ArrayList<>();
+        for(User artist: artists){
+            artistDTOs.add(artistToArtistDTO(artist));
+        }
+        return artistDTOs;
+    }
     public ObjectToDTO(){}
 }
