@@ -9,6 +9,7 @@ import com.st1xee.music.models.User;
 import com.st1xee.music.services.PlaylistService;
 import com.st1xee.music.services.SongService;
 import com.st1xee.music.services.AlbumService;
+import com.st1xee.music.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AlbumAPIController {
     private final AlbumService albumService;
+    private final UserService userService;
     private final ObjectToDTO objectToDTO = new ObjectToDTO();
 
     @GetMapping ("/shazam")
@@ -38,6 +40,15 @@ public class AlbumAPIController {
         return ResponseEntity.ok(objectToDTO.albumToAlbumDTO(album));
     }
 
+    @GetMapping("/user-albums/{id}")
+    public ResponseEntity<List<AlbumDTO>> getMyAlbums(@PathVariable Long id) {
+        List<Album> list = albumService.getAlbumsByArtist(userService.getUserById(id));
+        List<AlbumDTO> listDTO = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            listDTO.add(objectToDTO.albumToAlbumDTO(list.get(i)));
+        }
+        return ResponseEntity.ok(listDTO);
+    }
 
 
     @GetMapping("/get/{id}")

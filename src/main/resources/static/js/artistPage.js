@@ -55,7 +55,7 @@ function openArtistPage(elementId, elementCount) {
                         <div class="album" id="album">
                           <div class="album-header">
                             <div class="album-preview">
-                              <img src="/image/${data.previewId}">
+                              <img src="${data.previewId ? '/image/' + data.previewId : '../img/without-image.png'}">
                             </div>
                             <div class="album-info">
                               <div class="info">
@@ -93,7 +93,7 @@ function openArtistPage(elementId, elementCount) {
                         albumBlock.innerHTML = `
                             <div class="artist-page-album-info">
                               <div class="artist-page-album-info-preview">
-                                <img src="/image/${album.previewId}">
+                                <img src="${album.previewId ? '/image/' + album.previewId : '../img/without-image.png'}">
                               </div>
                               <div class="artist-page-album-info-text">
                                 <div class="artist-page-album-info-title">

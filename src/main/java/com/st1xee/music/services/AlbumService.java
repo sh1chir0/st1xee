@@ -36,8 +36,13 @@ public class AlbumService {
     }
     public void updatePreview(Long id, MultipartFile file) throws IOException {
         Album album = getAlbumById(id);
+
+        Long prevId = album.getPreview().getId();
+
         album.setPreview(imageService.add(file));
         updateAlbum(album);
+
+        imageService.deleteImage(prevId);
     }
     public void updateTitle(Long id, String title){
         Album album = getAlbumById(id);

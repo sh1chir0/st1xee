@@ -17,7 +17,7 @@ function innerUser(){
         .then(response => response.json())
         .then(data => {
             myNickname.innerText = data.nickname
-            myAvatar.src = `/image/${data.avatarId}`
+            myAvatar.src = `${data.avatarId ? '/image/' + data.avatarId : '../img/without-image.png'}`
         })
 }
 innerUser()
@@ -55,7 +55,7 @@ function randomSong(){
                 playerContainer.innerHTML = `
                         <div class="player-container">
                       <div class="song-preview">
-                          <img class="song-preview-img" src="/image/${data.id}">
+                          <img class="song-preview-img" src="${data.id ? '/image/' + data.id : '../img/without-image.png'}">
                       </div>
                       <div class="player-song-name">
                           <div class="name">

@@ -90,7 +90,7 @@ export function artistPanel(){
                         
                             <div class="page-my-album-settings-preview">
                               <div class="current-avatar">
-                                <img src="/image/${album.previewId}">
+                                <img src="${album.previewId ? '/image/' + album.previewId : '../img/without-image.png'}">
                               </div>
                               <div class="load-avatar">
                                   <input class="form-control" type="file" accept="image/*" id="album-avatar" name="avatar" required>

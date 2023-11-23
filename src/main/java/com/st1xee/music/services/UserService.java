@@ -1,6 +1,7 @@
 package com.st1xee.music.services;
 
 import com.st1xee.music.enums.Roles;
+import com.st1xee.music.models.Image;
 import com.st1xee.music.models.Playlist;
 import com.st1xee.music.models.Song;
 import com.st1xee.music.models.User;
@@ -122,15 +123,11 @@ public class UserService {
 
     public void updateAvatar(MultipartFile avatar, User user) throws IOException{
         if(avatar != null){
+            Long prevId = user.getImage().getId();
             user.setImage(imageService.add(avatar));
-        }
-        saveUser(user);
-    }
-    public void deleteAvatar(Long id){
-        User user = getUserById(id);
-        if(user != null){
-            user.setImage(imageService.getImageById(1L));
             saveUser(user);
+
+            imageService.deleteImage(prevId);
         }
     }
 

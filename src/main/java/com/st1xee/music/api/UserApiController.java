@@ -149,15 +149,6 @@ public class UserApiController {
     }
 
     @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
-    @PostMapping("/{id}/avatar/delete")
-    public ResponseEntity<String> deleteAvatar(@PathVariable Long id, @AuthenticationPrincipal User admin){
-        if(acceptForAdmin(userService.getUserById(id), admin))
-            userService.deleteAvatar(id);
-
-        return ResponseEntity.ok("Avatar was deleted");
-    }
-
-    @PreAuthorize("hasAnyAuthority('CREATOR', 'ADMIN', 'MODERATOR')")
     @PostMapping("/{id}/change-role")
     public ResponseEntity<String> changeRole(@PathVariable Long id,
                                              @RequestParam("role") String role,

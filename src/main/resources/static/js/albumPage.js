@@ -12,7 +12,7 @@ export function loadAlbum(album){
                 <div class="album" id="album">
                     <div class="album-header">
                         <div class="album-preview">
-                            <img src="/image/${album.previewId}">
+                            <img src="${album.previewId ? '/image/' + album.previewId : '../img/without-image.png'}">
                         </div>
                         <div class="album-info">
                             <div class="artist-name">
@@ -44,7 +44,8 @@ export function loadAlbum(album){
             `
     workStation.appendChild(albumContainer)
     const albumElement = document.getElementById('album')
-    albumElement.style.backgroundImage = `url('/image/${album.previewId}')`
+
+    albumElement.style.backgroundImage = `url('${album.previewId ? '/image/' + album.previewId : '../img/without-image.png'}')`
 
     loadAlbumSongs(album, 'album-songs')
 

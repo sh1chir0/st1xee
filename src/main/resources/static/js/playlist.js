@@ -39,7 +39,7 @@ export function updatePlaylist(){
                 const artistButtonId = `artist-button-${i+1}`
                 songBlock.innerHTML = `<div class="image">
                   <i class="fa-solid fa-play play-icon"></i>
-                     <img id="${playBtnId}" src="/image/${song.preview}">
+                     <img id="${playBtnId}" src="${song.preview ? '/image/' + song.preview : '../img/without-image.png'}">
                 </div>
                 <div class="name">
                   <div class="song-name">

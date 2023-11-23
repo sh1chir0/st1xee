@@ -22,7 +22,7 @@ function viewUserProfile() {
 
                 <div class="avatar">
                     <div class="current-avatar">
-                        <img src="/image/${data.avatarId}" alt="Current Avatar">
+                        <img src="${data.avatarId ? '/image/' + data.avatarId : '../img/without-image.png'}">
                     </div>
                     <div class="load-avatar">
                         <input class="form-control" type="file" accept="image/*" id="avatar" name="avatar" required>
@@ -135,7 +135,7 @@ function handleAvatarUpload() {
 }
 
 export function deleteAvatar(id, func){
-    fetch(`/api/user/${id}/avatar/delete`, {
+    fetch(`/api/image/delete/user-image/${id}`, {
         method: 'POST',
     })
         .then(response => {

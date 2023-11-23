@@ -24,7 +24,8 @@ public class ObjectToDTO {
         albumDTO.setSongsDTO(songListToSongDTOList(album.getSongs()));
         albumDTO.setTotalSongs(album.getTotalSongs());
         albumDTO.setTotalDuration(album.getTotalDuration());
-        albumDTO.setPreviewId(album.getPreview().getId());
+        if(album.getPreview() != null)
+            albumDTO.setPreviewId(album.getPreview().getId());
         return albumDTO;
     }
 
@@ -39,7 +40,8 @@ public class ObjectToDTO {
             songDTO.setAlbumId(song.getAlbum().getId());
             songDTO.setAlbumTitle(song.getAlbum().getTitle());
         }
-        songDTO.setPreview(song.getPreview().getId());
+        if(song.getPreview() != null)
+            songDTO.setPreview(song.getPreview().getId());
         songDTO.setDuration(song.getDuration());
         return songDTO;
     }
@@ -58,7 +60,8 @@ public class ObjectToDTO {
         } else {
             userDTO.setRole("");
         }
-        userDTO.setAvatarId(user.getImage().getId());
+        if(user.getImage() != null)
+            userDTO.setAvatarId(user.getImage().getId());
 
         return userDTO;
     }
@@ -73,7 +76,8 @@ public class ObjectToDTO {
         ArtistDTO artistDTO = new ArtistDTO();
         artistDTO.setId(artist.getId());
         artistDTO.setNickname(artist.getNickname());
-        artistDTO.setPreviewId(artist.getImage().getId());
+        if(artist.getImage() != null)
+            artistDTO.setPreviewId(artist.getImage().getId());
         List<AlbumDTO> albums = new ArrayList<>();
         for (int i = 0; i < artist.getAlbums().size(); i++) {
             AlbumDTO albumDTO = albumToAlbumDTO(artist.getAlbums().get(i));

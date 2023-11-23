@@ -47,7 +47,7 @@ function loadSong(song){
     playerContainer.innerHTML = `
                         <div class="player-container">
                           <div class="song-preview">
-                              <img class="song-preview-img" src="/image/${song.preview}">
+                              <img class="song-preview-img" src="${song.preview ? '/image/' + song.preview : '../img/without-image.png'}">
                           </div>
                           <div class="player-song-name">
                               <div class="name">
@@ -86,7 +86,7 @@ function loadSong(song){
     init()
 
     audio.src = '/api/song/' + song.id + '/play'
-    player.style.backgroundImage = `url(/image/${song.preview})`
+    player.style.backgroundImage = `url('${song.preview ? '/image/' + song.preview : '../img/without-image.png'}')`
 
 
     audio.addEventListener('canplaythrough', () => {
@@ -143,10 +143,14 @@ function loadSong(song){
 
     progressContainer.addEventListener('click', setProgress)
 
+    if(isShuffle)
+        shuffle.style.opacity = 0.5
+
+    if(isRepeat)
+        repeat.style.opacity = 0.5
+
+
     artistButtonFromPlayer()
-    // artistNickname.addEventListener('click', () => {
-    //
-    // })
 }
 
 loadSong(albumForPlaying[songIndex])
